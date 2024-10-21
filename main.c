@@ -37,17 +37,18 @@ int mainMenu();
 void createDeck(Card deck[52]);
 void shuffleCards(Card deck[52]);
 void dealCards(Card deck[52], int *topCardIndex, Card hand[], int *handSize);
-int calculateTotalValue(Card hand[], int handSize);
-int handleAces(int totalValue, int numAces);
+int calculateTotalValue(Card hand[], int handSize, bool isHuman);
+int handleAces(int totalValue, int numAces, bool isHuman);
 bool hasEnoughCards(int topCardIndex);
 void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int dealerHandSize, int playerTotal, int dealerTotal);
 void saveDeckToFile(const char *filename, Card deck[52]);
 void readDeckFromFile(const char *filename, Card deck[52]);
+// void createInitialFiles();
 
 void createDeck(Card deck[52]) {
     char* suits[4] = {"Heart", "Diamond", "Spade", "Club"};
     char* faceValues[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-    int cardValues[13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
+    int cardValues[13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 0};
 
     int index = 0;
 
@@ -92,16 +93,21 @@ void dealCards(Card deck[52], int *topCardIndex, Card hand[], int *handSize) {
     }
 }
 
-int handleAces(int totalValue, int numAces) {
+int handleAces(int totalValue, int numAces, bool isHuman) {
     while (numAces > 0) {
         if (totalValue + 11 <= 21) {
-            char AceCheck;
-            printf("\nDo you want an Ace of a. 11 or b. 1\n");
-            while (AceCheck != 'a' || AceCheck != 'b'){
+            if (isHuman){
+                char AceCheck;
+                printf("\nDo you want an Ace of a. 11 or b. 1\n");
                 scanf(" %c", &AceCheck);
                 if (AceCheck == 'a') {totalValue += 11;} else if(AceCheck == 'b') {totalValue += 1;}
+            } else {
+                srand(time(NULL));
+                int dRAND = rand() % 2;
+                int valArr[2] = {11, 1};
+                totalValue += valArr[dRAND];
             }
-        } else {
+        } else { 
             totalValue += 1;
         }
         numAces--;
@@ -109,22 +115,45 @@ int handleAces(int totalValue, int numAces) {
     return totalValue;
 }
 
-int calculateTotalValue(Card hand[], int handSize) {
+
+int calculateTotalValue(Card hand[], int handSize, bool isHuman) {
     int totalValue = 0;
     int numAces = 0;
 
     for (int i = 0; i < handSize; i++) {
        
-        if (strcmp(hand[i].faceValue, "Ace") == 0) {
-            numAces++;
-        } else {
+        // if (strcmp(hand[i].faceValue, "Ace") != 0) {
+        //     numAces++;
+        // } else {
+        if (strcmp(hand[i].faceValue, "Ace") != 0) {
+            totalValue += hand[i].cardValue;
+        }
+        // }
+    }
+    for (int i = 0; i < handSize; i++) {
+        if (strcmp(hand[i].faceValue, "Ace") == 0){
+            if (hand[i].cardValue == 0) {
+                if (totalValue + 11 <= 21){
+                    char chosenAce;
+                    if (isHuman){
+                        printf("Do you want your ace to be value of (a. 11) or (b. 1)\n");
+                        scanf(" %c", &chosenAce);
+                        if (chosenAce == 'a'){hand[i].cardValue = 11;}
+                        else if (chosenAce == 'b'){hand[i].cardValue = 1;}
+                    } else {
+                        hand[i].cardValue = 11;
+                    }
+                } else {
+                    hand[i].cardValue = 1;
+                }
+            }
             totalValue += hand[i].cardValue;
         }
     }
 
-    if (numAces > 0) {
-        totalValue = handleAces(totalValue, numAces);
-    }
+    // if (numAces > 0){
+    //     totalValue = handleAces(totalValue, numAces, isHuman);
+    // }
 
     return totalValue;
 }
@@ -223,6 +252,7 @@ int main() {
                 topCardIndex = 0;
             }
 
+
             // Initialize hands
             Card playerHand[52];
             Card dealerHand[52];
@@ -236,59 +266,59 @@ int main() {
             dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
             // Calculate and print initial total values
-            int playerTotal = calculateTotalValue(playerHand, playerHandSize);
-            int dealerTotal = calculateTotalValue(dealerHand, dealerHandSize);
+            int playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
+            int dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
 
             displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
 
             // Check for Blackjack
             bool playerBlackjack = checkBlackjack(playerTotal);
             bool dealerBlackjack = checkBlackjack(dealerTotal);
+            char choice;
 
             if (playerBlackjack || dealerBlackjack) {
                 determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
-                break;
-            }
-
-            char choice;
-            while (1) {
-                printf("\nDo you want to Hit or Stand? (h/s): ");
-                scanf(" %c", &choice);
-                if (choice == 'h' || choice == 'H') {
-                    dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
-                    playerTotal = calculateTotalValue(playerHand, playerHandSize);
-                    displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
-                    if (playerTotal > 21) {
-                        printf("Player busts! Dealer wins.\n");
+            } else {
+                while (1) {
+                    printf("\nDo you want to Hit or Stand? (h/s): ");
+                    scanf(" %c", &choice);
+                    if (choice == 'h' || choice == 'H') {
+                        dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
+                        playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
+                        displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
+                        if (playerTotal > 21) {
+                            printf("Player busts! Dealer wins.\n");
+                            break;
+                        }
+                    } else if (choice == 's' || choice == 'S') {
+                        printf("Player stands.\n");
                         break;
+                    } else {
+                        printf("Invalid choice. Please enter 'h' to Hit or 's' to Stand.\n");
                     }
-                } else if (choice == 's' || choice == 'S') {
-                    printf("Player stands.\n");
-                    break;
-                } else {
-                    printf("Invalid choice. Please enter 'h' to Hit or 's' to Stand.\n");
                 }
-            }
 
-            if (playerTotal <= 21) {
-                // Dealer's turn: Draw cards until total value is at least 17
-                while (dealerTotal < 17) {
-                    dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
-                    dealerTotal = calculateTotalValue(dealerHand, dealerHandSize);
+                if (playerTotal <= 21) {
+                    // Dealer's turn: Draw cards until total value is at least 17
+                    while (dealerTotal < 17) {
+                        dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
+                        dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
+                        displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
+                    }
+
+                    // Print final hands and totals
                     displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
+
+                    // Determine the winner
+                    determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
                 }
-
-                // Print final hands and totals
-                displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
-
-                // Determine the winner
-                determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
             }
-
             // Ask the user if they want to start a new round
             printf("\nDo you want to start a new round? (y/n): ");
             scanf(" %c", &choice);
             if (choice == 'n' || choice == 'N') {
+                remove("NewDeck.txt");
+                remove("ShuffledDeck.txt");
                 break;
             }
         }
