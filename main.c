@@ -45,7 +45,7 @@ void saveDeckToFile(const char *filename, Card deck[52]);
 void readDeckFromFile(const char *filename, Card deck[52]);
 
 void createDeck(Card deck[52]) {
-    char* suits[4] = {"Red Heart", "Red Diamond", "Black Spade", "Black Club"};
+    char* suits[4] = {"Heart", "Diamond", "Spade", "Club"};
     char* faceValues[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
     int cardValues[13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
 
@@ -94,8 +94,15 @@ void dealCards(Card deck[52], int *topCardIndex, Card hand[], int *handSize) {
 
 int handleAces(int totalValue, int numAces) {
     while (numAces > 0) {
-        if (totalValue + 10 <= 21) {
-            totalValue += 10;
+        if (totalValue + 11 <= 21) {
+            char AceCheck;
+            printf("\nDo you want an Ace of a. 11 or b. 1\n");
+            while (AceCheck != 'a' || AceCheck != 'b'){
+                scanf(" %c", &AceCheck);
+                if (AceCheck == 'a') {totalValue += 11;} else if(AceCheck == 'b') {totalValue += 1;}
+            }
+        } else {
+            totalValue += 1;
         }
         numAces--;
     }
@@ -107,9 +114,11 @@ int calculateTotalValue(Card hand[], int handSize) {
     int numAces = 0;
 
     for (int i = 0; i < handSize; i++) {
-        totalValue += hand[i].cardValue;
+       
         if (strcmp(hand[i].faceValue, "Ace") == 0) {
             numAces++;
+        } else {
+            totalValue += hand[i].cardValue;
         }
     }
 
