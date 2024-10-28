@@ -12,10 +12,6 @@ The player can choose to “Hit’ as many times to get a higher total value of 
 Once the player chooses to “Stand” or goes “Bust”, the dealer will draw new cards into the dealer’s hand until he reaches a value of at least 17. 
 Once he reaches at least 17, the dealer stops drawing into his own hand.
 
-run the following before starting:
-    touch NewDeck.txt
-    touch ShuffledDeck.txt
-
 */
 
 #include <stdio.h>
@@ -400,17 +396,16 @@ int main() {
                                 d_hasAceSave = true;
                             }
                         }
+                        /* Dealer: 3 of Spades; 11 Ace; 4 or 14; Dealer Hit; Dealer gets 8; Dealer should add 4+8 instead;*/
 
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
-
-                        if (dealerTotal <= 21){
+                        if (d_hasAceSave == true && dealerTotal > 21){
                              for (int i = 0; i<=dealerHandSize-1; i++){
                                 if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11){
                                     dealerHand[i].cardValue = 1;
                                 }
                             }
                         }
-
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     }
