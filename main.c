@@ -1,27 +1,22 @@
 /*
+ * Blackjack Game - Created by Mohammad Shebaro - 24004149
+ * 
+ * Copyright © 2024. All rights reserved.
+ *
+ * Permission is hereby granted to use, modify, and distribute this code 
+ * for educational and personal purposes, provided that this copyright 
+ * notice and disclaimer are included in all copies or substantial portions 
+ * of the software.
+ *
+ */
 
-Blackjack is a card game where players play against the dealer of the cards. In the case of a singleplayer blackjack, there is only one player competing with the dealer.
-The goal is to get a set of cards in your hand that has a sum of values that is the higher than the dealer’s hand without going over 21.
-
-Gameplay: At the beginning of the game, the dealer will deal two cards each, face up, for himself and the player. 
-Since the dealt cards are face up, the player knows the total value of his own and the dealer’s hand. 
-The player has a choice to “Hit” or “Stand”. If he chooses to “Hit”, another card is dealt from the deck, face up. 
-If he chooses to “Stand”, no more card is dealt and the total value is calculated from whatever cards the player has in his hand. 
-The player can choose to “Hit’ as many times to get a higher total value of cards, until he either chooses “Stand” or he goes “Bust” (i.e. the total value of the card goes over 21), which means the player has lost.
-
-Once the player chooses to “Stand” or goes “Bust”, the dealer will draw new cards into the dealer’s hand until he reaches a value of at least 17. 
-Once he reaches at least 17, the dealer stops drawing into his own hand.
-
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <ctype.h>
 #include <stdbool.h>
 
-bool gameRunning = false;
+#include <string.h>
+#include <time.h>
 
 typedef struct {
     char suit[20];
@@ -39,7 +34,6 @@ bool hasEnoughCards(int topCardIndex);
 void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int dealerHandSize, int playerTotal, int dealerTotal);
 void saveDeckToFile(const char *filename, Card deck[52]);
 void readDeckFromFile(const char *filename, Card deck[52]);
-// void createInitialFiles();
 
 void createDeck(Card deck[52]) {
     char* suits[4] = {"Heart", "Diamond", "Spade", "Club"};
@@ -48,7 +42,7 @@ void createDeck(Card deck[52]) {
 
     int index = 0;
 
-    // Populate the deck
+    // Add cards to Deck (UNSHUFFLED)
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 13; j++) {
             strncpy(deck[index].suit, suits[i], sizeof(deck[index].suit) - 1);
@@ -60,12 +54,15 @@ void createDeck(Card deck[52]) {
         }
     }
 
-    // Save the new deck to a file
+    // Save the new deck to NewDeck.txt
     saveDeckToFile("NewDeck.txt", deck);
 }
 
 void shuffleCards(Card deck[52]) {
-    srand(time(NULL)); // Seed the random number generator
+    srand(time(NULL)); // Create a new seed to actually randomize
+    // Shuffle New Cards Deck (Fisher-Yates Algorithm)
+    // The way this works is by swapping the element of the array with a random index including the last
+    // O(n) complexity
     for (int i = 51; i > 0; i--) {
         int j = rand() % (i + 1);
         Card temp = deck[i];
@@ -73,11 +70,12 @@ void shuffleCards(Card deck[52]) {
         deck[j] = temp;
     }
 
-    // Save the shuffled deck to a file
+    // Save the shuffled deck to ShuffledDec.t.xt
     saveDeckToFile("ShuffledDeck.txt", deck);
 }
 
 void dealCards(Card deck[52], int *topCardIndex, Card hand[], int *handSize) {
+    // Deal cards from top of shuffled deck unless empty
     if (*topCardIndex < 52) {
         hand[*handSize] = deck[*topCardIndex];
         (*handSize)++;
@@ -94,19 +92,7 @@ int handleAces(int totalValue, Card hand[], int handSize, bool isHuman) {
         if (strcmp(hand[i].faceValue, "Ace") == 0){
             if (hand[i].cardValue == 0) {
                 if (totalValue + 11 <= 21){
-                    // char chosenAce;
-                    // if (isHuman){
-                        // printf("Do you want your ace to be value of (a. 11) or (b. 1)\n");
-                        // scanf(" %c", &chosenAce);
-                        // if (chosenAce == 'a'){hand[i].cardValue = 11;}
-                        // else if (chosenAce == 'b'){hand[i].cardValue = 1;}
-                        // hand[i].cardValue = 11;
-                    // } else {
-                        // srand(time(NULL));
-                        // int dRAND = rand() % 2;
-                        // int valArr[2] = {11, 1};
-                        hand[i].cardValue = 11;    
-                    //}
+                    hand[i].cardValue = 11;    
                 } else {
                     hand[i].cardValue = 1;
                 }
@@ -120,130 +106,76 @@ int handleAces(int totalValue, Card hand[], int handSize, bool isHuman) {
 
 int calculateTotalValue(Card hand[], int handSize, bool isHuman) {
     int totalValue = 0;
-    int numAces = 0;
 
     for (int i = 0; i < handSize; i++) {
-       
-        // if (strcmp(hand[i].faceValue, "Ace") != 0) {
-        //     numAces++;
-        // } else {
         if (strcmp(hand[i].faceValue, "Ace") != 0) {
             totalValue += hand[i].cardValue;
         }
-        // }
     }
 
     totalValue = handleAces(totalValue, hand, handSize, isHuman);
 
-    // if (numAces > 0){
-    //     totalValue = handleAces(totalValue, numAces, isHuman);
-    // }
-
     return totalValue;
 }
 
+
+// Modifiable function for minimum cards for new game
 bool hasEnoughCards(int topCardIndex) {
     return (52 - topCardIndex) >= 10;
 }
-int dOld;
-int pOld;
+
 void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int dealerHandSize, int playerTotal, int dealerTotal) {
+    // Duality checks is a boolean that changes if a player's ace has the value 11
+    // Duality changes if a player stands and loses but has an 11 save.
     bool playerDuality = false;
     bool dealerDuality = false;
 
-    bool playerChanged = false;
-    bool dealerChanged = false;
+    int maxHandSize = (playerHandSize > dealerHandSize) ? playerHandSize : dealerHandSize;
 
-    int Lines;
-    if (playerHandSize > dealerHandSize){
-        Lines = playerHandSize;
-    } else {
-        Lines = dealerHandSize;
+    printf("\nPlayers's Hand:         \t\tDealer's Hand      ");
+    printf("\n---------------         \t\t-------------     ");
+    printf("\n");
+
+    for (int i = 0; i < maxHandSize; i++) {
+        // Print player's hand if there are still cards
+        if (i < playerHandSize) {
+            printf("%i: %s of %s", i + 1, playerHand[i].faceValue, playerHand[i].suit);
+            if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11) {
+                playerDuality = true;
+            }
+        } else {
+            printf("                   ");  // Empty space if no more player cards
+        }
+
+        printf("    \t\t\t");
+
+        // Print dealer's hand if there are still cards
+        if (i < dealerHandSize) {
+            printf("%i: %s of %s", i + 1, dealerHand[i].faceValue, dealerHand[i].suit);
+            if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11) {
+                dealerDuality = true;
+            }
+        }
+
+        printf("\n");  // Move to the next line after printing both hands
     }
 
-    // for (int line = 0; line<Lines; line++){
+    if (playerDuality == true){
+        printf("Total: %d or %d", playerTotal-10, playerTotal);
+    } else {
+        printf("Total: %d", playerTotal);
+    }
 
-        // for (int i = playerIterator; i < playerHandSize; i++) {
+    if (dealerDuality == true){
+        printf("\t\t\t\tTotal: %d or %d", dealerTotal-10, dealerTotal);
+    } else {
+        printf("\t\t\t\tTotal: %d", dealerTotal);
+    }
 
-        // printf("\nPlayers's Hand:         Dealer's Hand      ");
-        // printf("\n---------------         -------------     ");
-        // printf("\n");
-        // // if (playerChanged == true){
-        // for (int i=0; i<=playerHandSize-1; i++){
-        //     printf("%i: %s of %s", i+1, playerHand[i].faceValue, playerHand[i].suit);
-        //     if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11){
-        //         playerDuality = true;
-        //     }
-        //     for (int j=0; j<=dealerHandSize-1; j++){
-        //         printf("\t\t%i: %s of %s", j+1, dealerHand[j].faceValue, dealerHand[j].suit);
-        //         if ((dealerHand[j].faceValue, "Ace") == 0 && dealerHand[j].cardValue == 11){
-        //             dealerDuality = true;
-        //         }
-        //         break;
-        //     }
-        //     printf("\n");
-        // }
-
-        int maxHandSize = (playerHandSize > dealerHandSize) ? playerHandSize : dealerHandSize;
-
-        printf("\nPlayers's Hand:         \t\tDealer's Hand      ");
-        printf("\n---------------         \t\t-------------     ");
-        printf("\n");
-
-        for (int i = 0; i < maxHandSize; i++) {
-            // Print player's hand if there are still cards
-            if (i < playerHandSize) {
-                printf("%i: %s of %s", i + 1, playerHand[i].faceValue, playerHand[i].suit);
-                if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11) {
-                    playerDuality = true;
-                }
-            } else {
-                printf("                   ");  // Empty space if no more player cards
-            }
-
-            printf("    \t\t\t");
-
-            // Print dealer's hand if there are still cards
-            if (i < dealerHandSize) {
-                printf("%i: %s of %s", i + 1, dealerHand[i].faceValue, dealerHand[i].suit);
-                if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11) {
-                    dealerDuality = true;
-                }
-            }
-
-            printf("\n");  // Move to the next line after printing both hands
-        }
-
-        
-        
-        // }
-        
-        
-        
-        // printf("\nDealer's Hand:\n");
-        // for (int i = 0; i < dealerHandSize; i++) {
-        //     // printf("%s of %s\n", dealerHand[i].faceValue, dealerHand[i].suit);
-        //     if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11){
-        //         dealerDuality = true;
-        //     }
-        // }
-
-        if (playerDuality == true){
-            printf("Total: %d or %d", playerTotal-10, playerTotal);
-        } else {
-            printf("Total: %d", playerTotal);
-        }
-
-        if (dealerDuality == true){
-            printf("\t\t\t\tTotal: %d or %d", dealerTotal-10, dealerTotal);
-        } else {
-            printf("\t\t\t\tTotal: %d", dealerTotal);
-        }
-
-        printf("\n");
-    // }
+    printf("\n");
 }
 
+// Function to Save Deck to file
 void saveDeckToFile(const char *filename, Card deck[52]) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -258,6 +190,8 @@ void saveDeckToFile(const char *filename, Card deck[52]) {
     fclose(file);
 }
 
+
+// Function to Read Deck from file
 void readDeckFromFile(const char *filename, Card deck[52]) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -272,10 +206,12 @@ void readDeckFromFile(const char *filename, Card deck[52]) {
     fclose(file);
 }
 
+// Checks Player/Dealer Blackjack
 bool checkBlackjack(int total) {
     return total == 21;
 }
 
+// If-Else for Win/Lose Conditions
 void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool dealerBlackjack) {
     if (playerBlackjack && dealerBlackjack) {
         printf("Both player and dealer have Blackjack! It's a draw.\n");
@@ -298,7 +234,9 @@ void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, boo
     }
 }
 
-int main() {
+// Main Function
+int main(){
+    // Prompt mainMenu and proceed after start
     int ret = mainMenu();
     if (ret == 1) {
         Card deck[52];
@@ -312,7 +250,9 @@ int main() {
         readDeckFromFile("NewDeck.txt", deck);
         readDeckFromFile("ShuffledDeck.txt", deck);
 
+        // Game Loop Functionality
         while (1) {
+
             if (!hasEnoughCards(topCardIndex)) {
                 printf("Not enough cards in the deck. Creating and shuffling a new deck.\n");
                 createDeck(deck);
@@ -396,7 +336,6 @@ int main() {
                                 d_hasAceSave = true;
                             }
                         }
-                        /* Dealer: 3 of Spades; 11 Ace; 4 or 14; Dealer Hit; Dealer gets 8; Dealer should add 4+8 instead;*/
 
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         if (d_hasAceSave == true && dealerTotal > 21){
@@ -406,6 +345,7 @@ int main() {
                                 }
                             }
                         }
+
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     }
@@ -431,8 +371,6 @@ int main() {
     return 0;
 }
 
-char exitProcess;
-
 int mainMenu() {
     char currentCommand[10];
     char exitProcess[10];
@@ -455,6 +393,7 @@ int mainMenu() {
             printf("You can choose to hit as many times as you want, but the dealer hits until he reaches atleast 17.\n");
             printf("You can stand your chosen cards.\n");
             fgets(exitProcess, sizeof(exitProcess), stdin);
+            // Checks if player presses Enter to go back to Main Menu
             if (exitProcess[0] == '\n') {
                 continue;
             }
