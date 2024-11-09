@@ -349,7 +349,6 @@ int main(){
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     }
-                    printf("Dealer stands.\n");
 
                     // Print final hands and totals
                     displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
