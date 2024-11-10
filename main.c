@@ -359,12 +359,21 @@ int main(){
             }
             // Ask the user if they want to start a new round
             printf("\nDo you want to start a new round? (y/n): ");
-            scanf(" %c", &choice);
-            if (choice == 'n' || choice == 'N') {
-                remove("NewDeck.txt");
-                remove("ShuffledDeck.txt");
-                break;
+            int exitGame = 0;
+            while (1){
+                scanf(" %c", &choice);
+                if (choice == 'n' || choice == 'N') {
+                    remove("NewDeck.txt");
+                    remove("ShuffledDeck.txt");
+                    exitGame = 1;
+                    break;
+                } else if (choice == 'y' || choice == 'Y') {
+                    break;
+                } else {
+                    printf("Please enter a valid character (y/n): ");
+                }
             }
+            if (exitGame==1){break;}
         }
     }
     return 0;
