@@ -97,8 +97,7 @@ void draw_value(char* player, int value, int midpoint){
 // Function to draw the card outline and fill
 void draw_card_outline(int x, int y, int width, int height) {
     // Draw card outline with rounded corners
-    gfx_color(0, 0, 0);  // Black border
-    gfx_rectangle(x, y, width, height);
+    
 
     // Fill card with light gray color
     gfx_color(240, 240, 240);  // Light gray fill
@@ -115,7 +114,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
     gfx_color(r, g, b);  // Set color for the character
   
     // Define pixel patterns for numbers 0 to 10 and letter A
-    int patterns[12][15][9] = {
+    int patterns[14][15][9] = {
         // 0
         {{0, 0, 0, 1, 1, 1, 0, 0, 0},
          {0, 0, 1, 0, 0, 0, 1, 0, 0},
@@ -276,7 +275,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-         // J (11)
+         // J (12 (10 in Array)
         {{0, 0, 1, 1, 1, 1, 1, 1, 1},
          {0, 0, 0, 0, 0, 0, 1, 0, 0},
          {0, 0, 0, 0, 0, 0, 1, 0, 0},
@@ -288,6 +287,38 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {1, 0, 0, 0, 0, 0, 1, 0, 0},
          {1, 0, 0, 0, 0, 0, 1, 0, 0},
          {0, 1, 1, 1, 1, 1, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0}},
+         // Q (13 (11 in Array)
+        {{0, 1, 1, 1, 1, 1, 0, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 1, 1, 1, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 1, 1, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {0, 1, 1, 1, 1, 1, 0, 1, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 1},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0}},
+         // K (14 (12 in Array)
+        {{1, 1, 1, 0, 0, 1, 1, 1, 0},
+         {0, 1, 0, 0, 0, 1, 0, 0, 0},
+         {0, 1, 0, 0, 1, 0, 0, 0, 0},
+         {0, 1, 0, 1, 0, 0, 0, 0, 0},
+         {0, 1, 1, 0, 0, 0, 0, 0, 0},
+         {0, 1, 0, 0, 0, 0, 0, 0, 0},
+         {0, 1, 1, 0, 0, 0, 0, 0, 0},
+         {0, 1, 0, 1, 0, 0, 0, 0, 0},
+         {0, 1, 0, 0, 1, 0, 0, 0, 0},
+         {0, 1, 0, 0, 0, 1, 0, 0, 0},
+         {1, 1, 1, 0, 0, 1, 1, 1, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -568,6 +599,7 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
             break;
             case 9:
+                  int oldY = y;
                   if (suit == 'D'){
                       y += 3;
                   }
@@ -582,8 +614,11 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + 40, suit);
                   draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - 30, suit);
                   draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - 65, suit);
+                  
+                  y = oldY;
             break;
             case 10:
+                  oldY = y;
                   int Y1 = 3;
                   int Y2 = 38;
                   int Y3 = 32;
@@ -630,12 +665,15 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   
                   draw_symbol(x + card_width / 2, y + card_height / 2 - Y1, suit);
                   draw_symbol(x + card_width / 2, y + card_height / 2 + Y2, suit);
-                  
+                  y = oldY;
             break;
             default:
                  draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
             break;
         }
+      gfx_color(0, 0, 0);  // Black border
+      gfx_rectangle(x, y, card_width, card_height);
+      gfx_rectangle(x-1, y-1, card_width, card_height);
     }
     gfx_flush();
 }
@@ -787,6 +825,10 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
               int drawnValue = playerHand[i].cardValue;
               if (strcmp(playerHand[i].faceValue, "Jack") == 0){
                   drawnValue = 12;
+              } else if (strcmp(playerHand[i].faceValue, "Queen") == 0){
+                  drawnValue = 13;
+              } else if (strcmp(playerHand[i].faceValue, "King") == 0){
+                  drawnValue = 14;
               }
               draw_card("Person", pIter, drawnValue, playerHand[i].suit[0]);
               pIter++;
@@ -806,6 +848,10 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
             int drawnValue = dealerHand[i].cardValue;
             if (strcmp(dealerHand[i].faceValue, "Jack") == 0){
                 drawnValue = 12;
+            } else if (strcmp(dealerHand[i].faceValue, "Queen") == 0){
+                drawnValue = 13;
+            } else if (strcmp(dealerHand[i].faceValue, "King") == 0){
+                drawnValue = 14;
             }
             draw_card("Dealer", dIter, drawnValue, dealerHand[i].suit[0]);
             dIter++;
@@ -924,12 +970,12 @@ int main(){
     int radius_y = 350;
 
     int border_thickness = 30;
-    for (int i = 0; i < border_thickness; i++) {
-        gfx_color(81 + i, 51 + i * 0.5, 17 + i * 0.3);
-        for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
-            for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
-                gfx_point(x, y);
-            }
+    int i = 29;
+    gfx_color(81, 51, 17);
+    printf("%i\n", i);
+    for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
+        for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
+            gfx_point(x, y);
         }
     }
 
