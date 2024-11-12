@@ -113,20 +113,20 @@ void draw_card_outline(int x, int y, int width, int height) {
 // Function to draw a number or letter using a pixel pattern
 void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
     gfx_color(r, g, b);  // Set color for the character
-
+  
     // Define pixel patterns for numbers 0 to 10 and letter A
-    int patterns[11][15][9] = {
+    int patterns[12][15][9] = {
         // 0
-        {{0, 0, 1, 1, 1, 1, 1, 0, 0},
+        {{0, 0, 0, 1, 1, 1, 0, 0, 0},
+         {0, 0, 1, 0, 0, 0, 1, 0, 0},
          {0, 1, 0, 0, 0, 0, 0, 1, 0},
-         {1, 0, 0, 0, 0, 0, 0, 0, 1},
-         {1, 0, 0, 0, 0, 0, 0, 0, 1},
-         {1, 0, 0, 0, 0, 0, 0, 0, 1},
-         {1, 0, 0, 0, 0, 0, 0, 0, 1},
-         {1, 0, 0, 0, 0, 0, 0, 0, 1},
-         {1, 0, 0, 0, 0, 0, 0, 0, 1},
          {0, 1, 0, 0, 0, 0, 0, 1, 0},
-         {0, 0, 1, 1, 1, 1, 1, 0, 0},
+         {0, 1, 0, 0, 0, 0, 0, 1, 0},
+         {0, 1, 0, 0, 0, 0, 0, 1, 0},
+         {0, 1, 0, 0, 0, 0, 0, 1, 0},
+         {0, 1, 0, 0, 0, 0, 0, 1, 0},
+         {0, 0, 1, 0, 0, 0, 1, 0, 0},
+         {0, 0, 0, 1, 1, 1, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -142,7 +142,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 1, 0, 0, 0, 0},
          {0, 0, 0, 0, 1, 0, 0, 0, 0},
          {0, 0, 0, 0, 1, 0, 0, 0, 0},
-         {1, 1, 1, 1, 1, 1, 1, 1, 1},
+         {0, 1, 1, 1, 1, 1, 1, 1, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -275,9 +275,29 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
-         {0, 0, 0, 0, 0, 0, 0, 0, 0}}};
+         {0, 0, 0, 0, 0, 0, 0, 0, 0}},
+         // J (11)
+        {{0, 0, 1, 1, 1, 1, 1, 1, 1},
+         {0, 0, 0, 0, 0, 0, 1, 0, 0},
+         {0, 0, 0, 0, 0, 0, 1, 0, 0},
+         {0, 0, 0, 0, 0, 0, 1, 0, 0},
+         {0, 0, 0, 0, 0, 0, 1, 0, 0},
+         {0, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {1, 0, 0, 0, 0, 0, 1, 0, 0},
+         {0, 1, 1, 1, 1, 1, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0},
+         {0, 0, 0, 0, 0, 0, 0, 0, 0}},
+         };
         // Draw the pattern for the given value (2 to 9 or 'A')
-        if (value >= 2 && value <= 9) {
+        if (value != 10) {
+            if (value > 11){
+                value -= 2;
+            }
             for (int i = 0; i < 15; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (patterns[value][i][j] == 1) {
@@ -290,7 +310,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
             for (int i = 0; i < 15; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (patterns[1][i][j] == 1) {
-                        gfx_point(x + j, y + i);
+                        gfx_point(x-1 + j, y + i);
                     }
                 }
             }
@@ -298,7 +318,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
             for (int i = 0; i < 15; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (patterns[0][i][j] == 1) {
-                        gfx_point(x + j + 10, y + i);
+                        gfx_point(x-1 + j + 8, y + i);
                     }
                 }
             }
@@ -474,10 +494,19 @@ void draw_card(char *player, int card_number, int value, char suit) {
             draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
         } else if (value == 10){
             draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-            draw_number_or_letter(x + card_width - 23, y + card_height - 15, r, g, b, value);
+            draw_number_or_letter(x + card_width - 23+4, y + card_height - 15, r, g, b, value);
         } else if (value == 1 || value == 11) {
             draw_large_A(x + 5, y + 3, r, g, b);
             draw_large_A(x + card_width - 12, y + card_height - 19, r, g, b);
+        } else if (value > 11){
+            gfx_color(r, g, b);
+            gfx_rectangle(x+10, y+20, card_width-20, card_height-40);
+            
+            draw_number_or_letter(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
+            draw_number_or_letter(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
+            
+            draw_number_or_letter(x + 5, y + 5, r, g, b, value);
+            draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
         }
         
         switch (value){
@@ -539,20 +568,69 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
             break;
             case 9:
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 7, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 42, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 28, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 63, suit);
+                  if (suit == 'D'){
+                      y += 3;
+                  }
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + 5, suit);
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + 40, suit);
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - 30, suit);
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - 65, suit);
                   
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - 15, suit);
+                  draw_symbol(x + card_width / 2, y + card_height / 2 - 10, suit);
                   
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 7, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 42, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 28, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 63, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + 5, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + 40, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - 30, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - 65, suit);
             break;
             case 10:
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 5, suit);
+                  int Y1 = 3;
+                  int Y2 = 38;
+                  int Y3 = 32;
+                  int Y4 = 67;
+                  if (suit == 'H'){
+                      y += 10;
+                      //Y1 +=5;
+                      Y3 -= 2;
+                      Y4 -=5;
+                  } else if (suit == 'S'){
+                      Y4-=5; // - up + down
+                      Y3-=5; // - up + down
+                      Y1+=5; // + up - down
+                      Y2+=5; // + up - down
+                  } else if (suit == 'C'){
+                      Y4-=3; // - up + down
+                      Y3-=3; // - up + down
+                      Y1+=3; // + up - down
+                      Y2+=3; // + up - down
+                  } else if (suit == 'D'){
+                      y += 8;
+                  }
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + Y1, suit);
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + Y2, suit);
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - Y3, suit);
+                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - Y4, suit);
+                  
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + Y1, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + Y2, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - Y3, suit);
+                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - Y4, suit);
+                  
+                  Y1 = 45;
+                  Y2 = 25;
+                  if (suit == 'H'){
+                      y -= 5;
+                      Y1 -= 3;
+                  } else if (suit == 'S'){
+                      Y1 -= 1;
+                      Y2 += 1;
+                  } else if (suit == 'D'){
+                      y -= 3;
+                  }
+                  
+                  draw_symbol(x + card_width / 2, y + card_height / 2 - Y1, suit);
+                  draw_symbol(x + card_width / 2, y + card_height / 2 + Y2, suit);
+                  
             break;
             default:
                  draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
@@ -706,7 +784,11 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         // Print player's hand if there are still cards
         if (i < playerHandSize) {
               printf("%i: %s of %s", i + 1, playerHand[i].faceValue, playerHand[i].suit);
-              draw_card("Person", pIter, playerHand[i].cardValue, playerHand[i].suit[0]);
+              int drawnValue = playerHand[i].cardValue;
+              if (strcmp(playerHand[i].faceValue, "Jack") == 0){
+                  drawnValue = 12;
+              }
+              draw_card("Person", pIter, drawnValue, playerHand[i].suit[0]);
               pIter++;
             
             if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11) {
@@ -721,7 +803,11 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         // Print dealer's hand if there are still cards
         if (i < dealerHandSize) {
             printf("%i: %s of %s", i + 1, dealerHand[i].faceValue, dealerHand[i].suit);
-            draw_card("Dealer", dIter, dealerHand[i].cardValue, dealerHand[i].suit[0]);
+            int drawnValue = dealerHand[i].cardValue;
+            if (strcmp(dealerHand[i].faceValue, "Jack") == 0){
+                drawnValue = 12;
+            }
+            draw_card("Dealer", dIter, drawnValue, dealerHand[i].suit[0]);
             dIter++;
             if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11) {
                 dealerDuality = true;
