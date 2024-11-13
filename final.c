@@ -45,6 +45,13 @@ void clear_text(char* player);
   
 void draw_value(char* player, int value, int midpoint, int aceCalc){
   char numStr[20];
+  int yaxis;
+  if (strcmp("Person", player) == 0){
+    yaxis = 605;
+  } else if (strcmp("Dealer", player) == 0){
+    yaxis = 55;
+  }
+
   if (aceCalc == 1){
     sprintf(numStr, "%d or %d", value-10, value);
   } else {
@@ -57,7 +64,7 @@ void draw_value(char* player, int value, int midpoint, int aceCalc){
   usleep(10000);
   
   gfx_color(0, 0, 0);
-  gfx_text(numStr, midpoint-15, 605, 2);
+  gfx_text(numStr, midpoint-15, yaxis, 2);
   gfx_flush();
 }
 
@@ -462,12 +469,12 @@ void draw_card(char *player, int card_number, int value, char suit) {
     int y;
     if (strcmp(player, "Dealer") == 0 && card_number == draw_D) {
         draw_D++;
-        base_x = 550;
-        y = 150;
+        base_x = 845;
+        y = 120;
     } else if (strcmp(player, "Person") == 0 && card_number == draw_P) {
         draw_P++;
-        base_x = 550;
-        y = 350;
+        base_x = 845;
+        y = 380;
     } else {
         return;
     }
@@ -478,6 +485,7 @@ void draw_card(char *player, int card_number, int value, char suit) {
 
     if (card_number >= 0 && card_number < MAX_CARDS) {
         int x = base_x + (card_number - MAX_CARDS / 2) * (card_width + 10);
+        if (card_number > 0){x-=85 * card_number;}
         draw_card_outline(x, y, card_width, card_height);
 
         // Draw card value and suit
@@ -733,7 +741,8 @@ void clear_text(char* player){
       x = 610;
       y = 640;
   } else if (strcmp("Dealer", player) == 0){
-      return;
+      x = 610;
+      y = 95;
   }
   for (int i = x-14; i<= x+75; i++){
       for (int j = y; j>=y-40; j--){
@@ -913,8 +922,8 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     if (playerDuality == true){
         printf("Total: %d or %d", playerTotal-10, playerTotal);
         int valX = (((1280/2)+(1280/2))/2)-25;
-        if (playerTotal/10 == 1){
-            valX - 6;
+        if (playerTotal/10 == 1 || playerTotal/10 == 2){
+            valX - 8;
         }
         draw_value("Person", playerTotal, valX, 1);
     } else {
@@ -923,8 +932,14 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     }
 
     if (dealerDuality == true){
+        int valX = (((1280/2)+(1280/2))/2)-25;
+        if (dealerTotal/10 == 1 || dealerTotal/10 == 2){
+            valX - 8;
+        }
+        draw_value("Dealer", dealerTotal, valX, 1);
         printf("\t\t\t\tTotal: %d or %d", dealerTotal-10, dealerTotal);
     } else {
+        draw_value("Dealer", dealerTotal, ((1280/2)+(1280/2))/2, 0);
         printf("\t\t\t\tTotal: %d", dealerTotal);
     }
 
@@ -1016,7 +1031,6 @@ void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, boo
 // Main Menu Function (GRAPHICS)
 
 int createHelpScreen(int x, int y){
-
     int oldx, oldy;
     oldx = x; oldy = y;
 
@@ -1194,6 +1208,164 @@ int createCreditsScreen(int x, int y){
     }
 }
 
+//
+
+typedef struct {
+    int x, y;
+} Point;
+
+Point interpolate(Point start, Point end, float t) {
+    Point p;
+    p.x = (int)(start.x * (1 - t) + end.x * t); 
+    p.y = (int)(start.y * (1 - t) + end.y * t); 
+    return p;
+}
+
+Point bezier(Point p0, Point p1, Point p2, float t) {
+    Point p;
+    p.x = (int)((1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x);
+    p.y = (int)((1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y);
+    return p;
+}
+
+void drawCurve(Point start, Point control, Point end, int steps) {
+    for (int i = 0; i <= steps; i++) {
+        float t = (float)i / steps; 
+        Point p = bezier(start, control, end, t); 
+        gfx_line(p.x, p.y, p.x + 1, p.y + 1); 
+    }
+}
+
+void characterDesign(char value){
+    gfx_color(0, 0, 0);
+    
+    
+
+    switch (value){
+        case 'X':
+            
+            gfx_line((1280/2)-300+20, 275, (1280/2)-350+20, 250);
+            gfx_line((1280/2)+300, 275, (1280/2)+350, 250);
+
+            gfx_line(290+20, 250, 305+20, 285);
+            gfx_line(990, 250, 980, 285);
+
+            gfx_line(305+20, 285, 275+20, 290);
+            gfx_line(980, 285, 1005, 290);
+
+            gfx_line(275+20, 290, 320+20, 315);
+            gfx_line(1005, 290, 960, 315);
+
+            gfx_line(340+20, 275, 325+20, 280);
+            gfx_line(325+20, 280, 315+20, 342);
+
+            gfx_line(315+20, 343, 326+20, 346);
+            gfx_line(326+20, 346, 346+20, 350);
+
+            gfx_line(325+20, 280, 340+15, 285);
+            gfx_line(340+20, 276, 338+20, 284);
+
+            gfx_line(940, 275, 953, 279);
+
+            gfx_line(953, 279, 941, 285);
+
+            gfx_line(953, 279, 964, 344);
+            
+            gfx_line(940, 277, 941, 286);
+
+            gfx_line(964, 345, 934, 349);
+
+            Point s1 = {942, 285};
+            Point c1 = {(942+357)/2, 325};
+            Point e1 = {357, 285};
+            drawCurve(s1, c1, e1, 100);
+
+            Point s2 = {934, 350};
+            Point c2 = {(934+366)/2, 377};
+            Point e2 = {366, 351};
+            drawCurve(s2, c2, e2, 100);
+            break;
+        case 'I':
+            int x, y;
+            x = 363; y = 303;
+        // Top horizontal line (1)
+            gfx_line(x, y-5, x + 30, y);  // (x, y) -> (x+10, y)
+            
+            // Middle vertical line (2) - Draw from row 2 to row 8
+            gfx_line(378, 301, 371, 339);
+            
+            // Bottom horizontal line (3)
+            gfx_line(356, 338, 386, 343);
+            break;
+        case 'N':
+            gfx_line(398, 347, 404, 304);
+
+            gfx_line(405, 304, 419, 348);
+
+            gfx_line(419, 348, 424, 309);
+            break;
+        case 'S':
+           int Scoordinates[7][2] = {
+            {453, 313},
+            {437, 312},
+            {436, 326},
+            {454, 328},
+            {451, 345},
+            {450, 349},
+            {433, 347}
+        };
+
+            for (int i = 0; i < 6; i++) {
+                gfx_line(Scoordinates[i][0], Scoordinates[i][1], Scoordinates[i+1][0], Scoordinates[i+1][1]);
+            }
+            break;
+        case 'U':
+            int Ucoordinates[4][2] = {
+                {465, 313},
+                {462, 349},
+                {476, 350},
+                {482, 317}
+            };
+            for (int i = 0; i < 3; i++) {
+                gfx_line(Ucoordinates[i][0], Ucoordinates[i][1], Ucoordinates[i+1][0], Ucoordinates[i+1][1]);
+            }
+            break;
+        case 'R':
+            int RCoord[10][2] = {
+                {491, 319},
+                {488, 348},
+                {491, 320},
+                {508, 321},
+                {508, 332},
+                {493, 333},
+                {503, 333},
+                {508, 337},
+                {511, 345},
+                {511, 353}
+            };
+            for (int i = 0; i < 9; i++) {
+                gfx_line(RCoord[i][0], RCoord[i][1], RCoord[i+1][0], RCoord[i+1][1]);
+            }
+
+            break;
+        case 'A':
+        int ACoord[5][2] = {
+            {520, 354},
+            {530, 322},
+            {538, 355},
+            {533, 341},
+            {524, 339}
+        };
+
+        for (int i = 0; i < 4; i++) {
+            gfx_line(ACoord[i][0], ACoord[i][1], ACoord[i+1][0], ACoord[i+1][1]);
+        }
+        break;
+    }
+
+}
+
+
 int createMenu(int x, int y){
     while (1){
         int scaleX = 200;
@@ -1324,13 +1496,60 @@ int main(){
 
             int border_thickness = 30;
             int i = 29;
-            gfx_color(81, 51, 17);
+            gfx_color(0,0,0);
             printf("%i\n", i);
+
+
+            radius_x += 5;
+            radius_y += 5;
+
             for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
                 for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
                     gfx_point(x, y);
                 }
             }
+
+            radius_x += 28;
+            radius_y += 28;
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
+                for (int y = 0; y <= center_y; y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+            gfx_flush();
+
+            radius_x = 500;
+            radius_y = 350;
+
+            gfx_color(81, 51, 17);
+
+            for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
+                for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+            radius_x += 30;
+            radius_y += 30;
+
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
+                for (int y = center_y; y <= center_y + radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x)); y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
+                for (int y = 0; y <= center_y; y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+
+            gfx_flush();
+
+            radius_x = 500;
+            radius_y = 350;
 
             gfx_color(25,70,25);
             for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
@@ -1345,6 +1564,16 @@ int main(){
                 }
             }
 
+            gfx_flush();
+
+            characterDesign('X');
+            characterDesign('I');
+            characterDesign('N');
+            characterDesign('S');
+            characterDesign('U');
+            characterDesign('R');
+            characterDesign('A');
+
             // Draw buttons for Hit and Stand using circular outlines
             draw_button((screenX/2)-100, 600, "Stand");
             draw_button((screenX/2)+100, 600, "Hit");
@@ -1353,6 +1582,9 @@ int main(){
             int x_between = ((screenX/2)+(screenX/2))/2;
             gfx_text("Total:", x_between-33, 570, 2);
             gfx_line(x_between-33, 595, x_between+37, 595);
+
+            gfx_text("Total:", x_between-33, 20, 2);
+            gfx_line(x_between-33, 45, x_between+37, 45);
         // gfx_text("2", x_between-15, 605, 2);
             // between buttons ((screenX/2)+100)+(screenX/2)-100)/2; 600
 
@@ -1369,6 +1601,10 @@ int main(){
             Card dealerHand[52];
             int playerHandSize = 0;
             int dealerHandSize = 0;
+
+            gfx_color(249, 199, 12);
+            gfx_rectangle(510, 375, 110, 160);
+            gfx_rectangle(510, 115, 110, 160);
 
             // Deal initial cards to player and dealer
             dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
@@ -1397,7 +1633,7 @@ int main(){
                     while (1) {
                         char c = gfx_wait();
                         if (c == 1) {
-                            //printf("%d %d\n", gfx_xpos(), gfx_ypos());
+                            printf("%d %d\n", gfx_xpos(), gfx_ypos());
                             int xPos = gfx_xpos();
                             int yPos = gfx_ypos();
                             int standButtonX = (screenX / 2) - 100;
