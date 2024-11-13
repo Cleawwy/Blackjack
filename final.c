@@ -923,7 +923,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         printf("Total: %d or %d", playerTotal-10, playerTotal);
         int valX = (((1280/2)+(1280/2))/2)-25;
         if (playerTotal/10 == 1 || playerTotal/10 == 2){
-            valX - 8;
+            valX - 8 + 2*playerTotal/10;
         }
         draw_value("Person", playerTotal, valX, 1);
     } else {
