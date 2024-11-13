@@ -40,7 +40,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
 void saveDeckToFile(const char *filename, Card deck[52]);
 void readDeckFromFile(const char *filename, Card deck[52]);
 
-// Graphics
+
 void clear_text(char* player);
   
 void draw_value(char* player, int value, int midpoint, int aceCalc){
@@ -68,13 +68,13 @@ void draw_value(char* player, int value, int midpoint, int aceCalc){
   gfx_flush();
 }
 
-// Function to draw the card outline and fill
+
 void draw_card_outline(int x, int y, int width, int height) {
-    // Draw card outline with rounded corners
+    
     
 
-    // Fill card with light gray color
-    gfx_color(240, 240, 240);  // Light gray fill
+    
+    gfx_color(240, 240, 240);  
     for (int i = 1; i < width - 1; i++) {
         for (int j = 1; j < height - 1; j++) {
             gfx_point(x + i, y + j);
@@ -83,13 +83,13 @@ void draw_card_outline(int x, int y, int width, int height) {
 }
 
 
-// Function to draw a number or letter using a pixel pattern
+
 void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
-    gfx_color(r, g, b);  // Set color for the character
+    gfx_color(r, g, b);  
   
-    // Define pixel patterns for numbers 0 to 10 and letter A
+    
     int patterns[14][15][9] = {
-        // 0
+        
         {{0, 0, 0, 1, 1, 1, 0, 0, 0},
          {0, 0, 1, 0, 0, 0, 1, 0, 0},
          {0, 1, 0, 0, 0, 0, 0, 1, 0},
@@ -105,7 +105,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 1
+        
         {{0, 0, 0, 0, 1, 0, 0, 0, 0},
          {0, 0, 0, 1, 1, 0, 0, 0, 0},
          {0, 0, 1, 0, 1, 0, 0, 0, 0},
@@ -121,7 +121,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 2
+        
         {{0, 0, 1, 1, 1, 1, 1, 0, 0},
          {0, 1, 0, 0, 0, 0, 0, 1, 0},
          {0, 0, 0, 0, 0, 0, 0, 1, 0},
@@ -137,7 +137,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 3
+        
         {{1, 1, 1, 1, 1, 1, 1, 1, 1},
          {0, 0, 0, 0, 0, 0, 0, 0, 1},
          {0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -153,7 +153,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 4
+        
          {{0, 0, 0, 0, 0, 1, 0, 0, 0},
          {0, 0, 0, 0, 1, 1, 0, 0, 0},
          {0, 0, 0, 1, 0, 1, 0, 0, 0},
@@ -169,7 +169,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 5
+        
         {{1, 1, 1, 1, 1, 1, 1, 1, 1},
          {1, 0, 0, 0, 0, 0, 0, 0, 0},
          {1, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -185,7 +185,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 6
+        
         {{0, 1, 1, 1, 1, 1, 1, 1, 1},
          {1, 0, 0, 0, 0, 0, 0, 0, 0},
          {1, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -201,7 +201,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-          // 7
+          
         {{1, 1, 1, 1, 1, 1, 1, 1, 1},
          {0, 0, 0, 0, 0, 0, 0, 0, 1},
          {0, 0, 0, 0, 0, 0, 0, 1, 0},
@@ -217,7 +217,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 8
+        
         {{0, 1, 1, 1, 1, 1, 1, 0, 0},
          {1, 0, 0, 0, 0, 0, 0, 1, 0},
          {1, 0, 0, 0, 0, 0, 0, 1, 0},
@@ -233,7 +233,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-        // 9
+        
         {{0, 1, 1, 1, 1, 1, 1, 0, 0},
          {1, 0, 0, 0, 0, 0, 0, 1, 0},
          {1, 0, 0, 0, 0, 0, 0, 1, 0},
@@ -249,7 +249,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-         // J (12 (10 in Array)
+         
         {{0, 0, 1, 1, 1, 1, 1, 1, 1},
          {0, 0, 0, 0, 0, 0, 1, 0, 0},
          {0, 0, 0, 0, 0, 0, 1, 0, 0},
@@ -265,7 +265,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-         // Q (13 (11 in Array)
+         
         {{0, 1, 1, 1, 1, 1, 0, 0, 0},
          {1, 0, 0, 0, 0, 0, 1, 0, 0},
          {1, 0, 0, 0, 0, 0, 1, 0, 0},
@@ -281,7 +281,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
-         // K (14 (12 in Array)
+         
         {{1, 1, 1, 0, 0, 1, 1, 1, 0},
          {0, 1, 0, 0, 0, 1, 0, 0, 0},
          {0, 1, 0, 0, 1, 0, 0, 0, 0},
@@ -298,7 +298,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
          {0, 0, 0, 0, 0, 0, 0, 0, 0},
          {0, 0, 0, 0, 0, 0, 0, 0, 0}},
          };
-        // Draw the pattern for the given value (2 to 9 or 'A')
+        
         if (value != 10) {
             if (value > 11){
                 value -= 2;
@@ -311,7 +311,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
                 }
             }
         } else if (value == 10) {
-            // Draw '1'
+            
             for (int i = 0; i < 15; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (patterns[1][i][j] == 1) {
@@ -319,7 +319,7 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
                     }
                 }
             }
-            // Draw '0' next to '1'
+            
             for (int i = 0; i < 15; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (patterns[0][i][j] == 1) {
@@ -330,11 +330,11 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
         }
     }
 
-// Function to draw the letter 'A' pixel by pixel
+
 void draw_large_A(int x, int y, int r, int g, int b) {
-    gfx_color(r, g, b);  // Set color for 'A'
+    gfx_color(r, g, b);  
     
-    // Draw the 'A' shape using individual pixels
+    
     int a_pattern[15][9] = {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 1, 0, 0, 0, 0},
@@ -362,34 +362,34 @@ void draw_large_A(int x, int y, int r, int g, int b) {
     }
 }
 
-// Function to draw a big heart using gfx_fillcircle and pixels
+
 void draw_big_heart(int x, int y) {
-    gfx_color(255, 0, 0);  // Red color for heart
+    gfx_color(255, 0, 0);  
 
-    // Draw the two circles for the top of the heart
-    gfx_fillcircle(x - 7, y, 15);  // Left circle, bigger and overlapping
-    gfx_fillcircle(x + 6, y, 15);  // Right circle, bigger and overlapping
+    
+    gfx_fillcircle(x - 7, y, 15);  
+    gfx_fillcircle(x + 6, y, 15);  
 
-    // Draw the bottom part of the heart using pixels to seamlessly blend with the circles
+    
     for (int i = -15; i <= 15; i++) {
         for (int j = 0; j <= 20; j++) {
-            if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  // Adjust to blend with circles
+            if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  
                 gfx_point(x + i, y + j);
             }
         }
     }
 }
 
-// Function to draw the club symbol using gfx_fillcircle
+
 void draw_club(int x, int y) {
-    gfx_color(0, 0, 0);  // Black color for club
+    gfx_color(0, 0, 0);  
 
-    // Draw three overlapping circles for the top part of the club
-    gfx_fillcircle(x - 6, y + 7, 15);  // Left circle
-    gfx_fillcircle(x + 6, y + 7, 15);  // Right circle
-    gfx_fillcircle(x, y - 4, 15);      // Bottom circle
+    
+    gfx_fillcircle(x - 6, y + 7, 15);  
+    gfx_fillcircle(x + 6, y + 7, 15);  
+    gfx_fillcircle(x, y - 4, 15);      
 
-    // Draw the stem of the club
+    
     for (int i = -2; i <= 2; i++) {
         for (int j = 15; j <= 30; j++) {
             gfx_point(x + i, y + 5);
@@ -403,21 +403,21 @@ void draw_club(int x, int y) {
     }
 }
 
-// Function to draw the spade symbol using an inverted heart
+
 void draw_spade(int x, int y) {
-     int y_offset = 10;  // Add this offset to move the spade down
+     int y_offset = 10;  
 
-      gfx_color(0, 0, 0);  // Black color for spade
+      gfx_color(0, 0, 0);  
 
-      // Draw the two circles for the top of the heart (inverted for spade)
-      gfx_fillcircle(x - 7, y + y_offset, 15);  // Left circle
-      gfx_fillcircle(x + 6, y + y_offset, 15);  // Right circle
+      
+      gfx_fillcircle(x - 7, y + y_offset, 15);  
+      gfx_fillcircle(x + 6, y + y_offset, 15);  
 
-      // Draw the bottom part of the heart (inverted for spade) using pixels to seamlessly blend with the circles
+      
       for (int i = -15; i <= 15; i++) {
           for (int j = 0; j <= 20; j++) {
-              if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  // Adjust to blend with circles
-                  gfx_point(x + i, y - j + y_offset);  // Flipped vertically with offset
+              if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  
+                  gfx_point(x + i, y - j + y_offset);  
               }
           }
       }
@@ -429,33 +429,33 @@ void draw_spade(int x, int y) {
     }
 }
 
-// Function to draw the diamond symbol with adjustments to centering and elongation
-void draw_diamond(int x, int y) {
-    gfx_color(255, 0, 0);  // Red color for diamond
 
-    // Draw diamond using a simple elongated rhombus shape
+void draw_diamond(int x, int y) {
+    gfx_color(255, 0, 0);  
+
+    
     for (int i = -10; i <= 10; i++) {
-        for (int j = -15; j <= 15; j++) {  // Elongate the diamond vertically
-            if (abs(i) + abs(j * 2 / 3) <= 10) {  // Adjust shape to be more centered and elongated
+        for (int j = -15; j <= 15; j++) {  
+            if (abs(i) + abs(j * 2 / 3) <= 10) {  
                 gfx_point(x + i, y + j);
             }
         }
     }
 }
 
-// Function to draw a symbol at the center of the card
+
 void draw_symbol(int x, int y, char suit) {
     switch (suit) {
-        case 'H':  // Heart
+        case 'H':  
             draw_big_heart(x, y);
             break;
-        case 'S':  // Spade
+        case 'S':  
             draw_spade(x, y);
             break;
-        case 'D':  // Diamond
+        case 'D':  
             draw_diamond(x, y+5);
             break;
-        case 'C':  // Club
+        case 'C':  
             draw_club(x, y+3);
             break;
     }
@@ -488,7 +488,7 @@ void draw_card(char *player, int card_number, int value, char suit) {
         if (card_number > 0){x-=85 * card_number;}
         draw_card_outline(x, y, card_width, card_height);
 
-        // Draw card value and suit
+        
         int r, g, b;
         if (suit == 'H' || suit == 'D') {
             r = 255; g = 0; b = 0;
@@ -578,7 +578,7 @@ void draw_card(char *player, int card_number, int value, char suit) {
         
         draw_number_or_letter(x + 5, y + 5, r, g, b, value);
         draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
-        gfx_color(0, 0, 0);  // Black border
+        gfx_color(0, 0, 0);  
         gfx_rectangle(x, y, card_width, card_height);
         gfx_rectangle(x-1, y-1, card_width, card_height);
         draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
@@ -678,19 +678,19 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   int Y4 = 67;
                   if (suit == 'H'){
                       y += 10;
-                      //Y1 +=5;
+                      
                       Y3 -= 2;
                       Y4 -=5;
                   } else if (suit == 'S'){
-                      Y4-=5; // - up + down
-                      Y3-=5; // - up + down
-                      Y1+=5; // + up - down
-                      Y2+=5; // + up - down
+                      Y4-=5; 
+                      Y3-=5; 
+                      Y1+=5; 
+                      Y2+=5; 
                   } else if (suit == 'C'){
-                      Y4-=3; // - up + down
-                      Y3-=3; // - up + down
-                      Y1+=3; // + up - down
-                      Y2+=3; // + up - down
+                      Y4-=3; 
+                      Y3-=3; 
+                      Y1+=3; 
+                      Y2+=3; 
                   } else if (suit == 'D'){
                       y += 8;
                   }
@@ -724,7 +724,7 @@ void draw_card(char *player, int card_number, int value, char suit) {
                  draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
             break;
         }
-      gfx_color(0, 0, 0);  // Black border
+      gfx_color(0, 0, 0);  
       gfx_rectangle(x, y, card_width, card_height);
       gfx_rectangle(x-1, y-1, card_width, card_height);
     }
@@ -735,8 +735,8 @@ void clear_text(char* player){
   gfx_color(25,70,25);
 
   int i, j, x, y;
-    // clear X from 610 - 670;
-    // clear Y from 603-640;
+    
+    
   if (strcmp("Person", player) == 0){
       x = 610;
       y = 640;
@@ -752,13 +752,13 @@ void clear_text(char* player){
   gfx_flush();
 }
 
-// Function to draw circular buttons with text (outline only)
+
 void draw_button(int x, int y, char *text) {
-    // Draw the circle outline for the button
+    
     gfx_color(0, 0, 0);
     gfx_circle(x, y, 100);
 
-    // Draw the button text
+    
     if (strcmp(text, "Hit") == 0){
         x -=15;
     } else {
@@ -776,7 +776,7 @@ void createDeck(Card deck[52]) {
 
     int index = 0;
 
-    // Add cards to Deck (UNSHUFFLED)
+    
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 13; j++) {
             strncpy(deck[index].suit, suits[i], sizeof(deck[index].suit) - 1);
@@ -788,15 +788,15 @@ void createDeck(Card deck[52]) {
         }
     }
 
-    // Save the new deck to NewDeck.txt
+    
     saveDeckToFile("NewDeck.txt", deck);
 }
 
 void shuffleCards(Card deck[52]) {
-    srand(time(NULL)); // Create a new seed to actually randomize
-    // Shuffle New Cards Deck (Fisher-Yates Algorithm)
-    // The way this works is by swapping the element of the array with a random index including the last
-    // O(n) complexity
+    srand(time(NULL)); 
+    
+    
+    
     for (int i = 51; i > 0; i--) {
         int j = rand() % (i + 1);
         Card temp = deck[i];
@@ -804,12 +804,12 @@ void shuffleCards(Card deck[52]) {
         deck[j] = temp;
     }
 
-    // Save the shuffled deck to ShuffledDec.t.xt
+    
     saveDeckToFile("ShuffledDeck.txt", deck);
 }
 
 void dealCards(Card deck[52], int *topCardIndex, Card hand[], int *handSize) {
-    // Deal cards from top of shuffled deck unless empty
+    
     if (*topCardIndex < 52) {
         hand[*handSize] = deck[*topCardIndex];
         (*handSize)++;
@@ -853,15 +853,15 @@ int calculateTotalValue(Card hand[], int handSize, bool isHuman) {
 }
 
 
-// Modifiable function for minimum cards for new game
+
 bool hasEnoughCards(int topCardIndex) {
     return (52 - topCardIndex) >= 10;
 }
 
 
 void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int dealerHandSize, int playerTotal, int dealerTotal) {
-    // Duality checks is a boolean that changes if a player's ace has the value 11
-    // Duality changes if a player stands and loses but has an 11 save.
+    
+    
     bool playerDuality = false;
     bool dealerDuality = false;
 
@@ -873,7 +873,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     int pIter = 0;
     int dIter = 0;
     for (int i = 0; i < maxHandSize; i++) {
-        // Print player's hand if there are still cards
+        
         if (i < playerHandSize) {
               printf("%i: %s of %s", i + 1, playerHand[i].faceValue, playerHand[i].suit);
               int drawnValue = playerHand[i].cardValue;
@@ -893,12 +893,12 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
                 playerDuality = true;
             }
         } else {
-            printf("                   ");  // Empty space if no more player cards
+            printf("                   ");  
         }
 
         printf("    \t\t\t");
 
-        // Print dealer's hand if there are still cards
+        
         if (i < dealerHandSize) {
             printf("%i: %s of %s", i + 1, dealerHand[i].faceValue, dealerHand[i].suit);
             int drawnValue = dealerHand[i].cardValue;
@@ -916,7 +916,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
             }
         }
 
-        printf("\n");  // Move to the next line after printing both hands
+        printf("\n");  
     }
 
     if (playerDuality == true){
@@ -950,7 +950,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     printf("\n");
 }
 
-// Function to Save Deck to file
+
 void saveDeckToFile(const char *filename, Card deck[52]) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -966,7 +966,7 @@ void saveDeckToFile(const char *filename, Card deck[52]) {
 }
 
 
-// Function to Read Deck from file
+
 void readDeckFromFile(const char *filename, Card deck[52]) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -981,12 +981,12 @@ void readDeckFromFile(const char *filename, Card deck[52]) {
     fclose(file);
 }
 
-// Checks Player/Dealer Blackjack
+
 bool checkBlackjack(int total) {
     return total == 21;
 }
 
-// If-Else for Win/Lose Conditions
+
 void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool dealerBlackjack) {
     gfx_color(53, 101, 77);
     gfx_fillrectangle((1280/2)-300, (830/2)-250, 600, 125);
@@ -1002,25 +1002,25 @@ void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, boo
         gfx_text("Both player and dealer have Blackjack! It's a draw.", midTextX, midTextY, 2);
     } else if (playerBlackjack) {
         printf("Player has Blackjack! Player wins.\n");
-        gfx_text("Player has Blackjack! Player wins.", midTextX-80, midTextY-40, 2); // perfect
+        gfx_text("Player has Blackjack! Player wins.", midTextX-80, midTextY-40, 2); 
     } else if (dealerBlackjack) {
         printf("Dealer has Blackjack! Dealer wins.\n");
-        gfx_text("Dealer has Blackjack! Dealer wins.", midTextX-80, midTextY, 2); // perfect
+        gfx_text("Dealer has Blackjack! Dealer wins.", midTextX-80, midTextY, 2); 
     } else if (playerTotal > 21 && dealerTotal > 21) {
         printf("Both player and dealer bust! No one wins.\n");
-        gfx_text("Both player and dealer bust! No one wins.", midTextX-120, midTextY-30, 2); // perfect
+        gfx_text("Both player and dealer bust! No one wins.", midTextX-120, midTextY-30, 2); 
     } else if (playerTotal > 21) {
         printf("Player busts! Dealer wins.\n");
-        gfx_text("Player busts! Dealer wins.", midTextX-30, midTextY-30, 2); // perfect
+        gfx_text("Player busts! Dealer wins.", midTextX-30, midTextY-30, 2); 
     } else if (dealerTotal > 21) {
         printf("Dealer busts! Player wins.\n");
-        gfx_text("Dealer busts! Player wins.", midTextX-30, midTextY-30, 2); // perfect
+        gfx_text("Dealer busts! Player wins.", midTextX-30, midTextY-30, 2); 
     } else if (playerTotal > dealerTotal) {
         printf("Player wins with %d against dealer's %d.\n", playerTotal, dealerTotal);
-        gfx_text("Player wins! Dealer loses.", midTextX-30, midTextY-30, 2); // perfect
+        gfx_text("Player wins! Dealer loses.", midTextX-30, midTextY-30, 2); 
     } else if (dealerTotal > playerTotal) {
         printf("Dealer wins with %d against player's %d.\n", dealerTotal, playerTotal);
-        gfx_text("Dealer wins! Player loses.", midTextX-30, midTextY-30, 2); // perfect
+        gfx_text("Dealer wins! Player loses.", midTextX-30, midTextY-30, 2); 
     } else {
         printf("It's a draw with both having %d.\n", playerTotal);
         gfx_text("It's a draw.", midTextX+50, midTextY-30, 2);
@@ -1028,7 +1028,7 @@ void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, boo
     gfx_flush();
 }
 
-// Main Menu Function (GRAPHICS)
+
 
 int createHelpScreen(int x, int y){
     int oldx, oldy;
@@ -1208,7 +1208,7 @@ int createCreditsScreen(int x, int y){
     }
 }
 
-//
+
 
 typedef struct {
     int x, y;
@@ -1288,13 +1288,13 @@ void characterDesign(char value){
         case 'I':
             int x, y;
             x = 363; y = 303;
-        // Top horizontal line (1)
-            gfx_line(x, y-5, x + 30, y);  // (x, y) -> (x+10, y)
+        
+            gfx_line(x, y-5, x + 30, y);  
             
-            // Middle vertical line (2) - Draw from row 2 to row 8
+            
             gfx_line(378, 301, 371, 339);
             
-            // Bottom horizontal line (3)
+            
             gfx_line(356, 338, 386, 343);
             break;
         case 'N':
@@ -1303,6 +1303,12 @@ void characterDesign(char value){
             gfx_line(405, 304, 419, 348);
 
             gfx_line(419, 348, 424, 309);
+
+            gfx_line(570, 315, 570, 355);
+
+            gfx_line(570, 355, 546, 315);
+
+            gfx_line(545, 315, 545, 355);
             break;
         case 'S':
            int Scoordinates[7][2] = {
@@ -1331,35 +1337,33 @@ void characterDesign(char value){
             }
             break;
         case 'R':
-            int RCoord[10][2] = {
-                {491, 319},
-                {488, 348},
-                {491, 320},
-                {508, 321},
-                {508, 332},
-                {493, 333},
-                {503, 333},
-                {508, 337},
-                {511, 345},
-                {511, 353}
-            };
-            for (int i = 0; i < 9; i++) {
-                gfx_line(RCoord[i][0], RCoord[i][1], RCoord[i+1][0], RCoord[i+1][1]);
-            }
+
+            gfx_line(490, 353, 494, 313);
+
+            gfx_line(494, 313, 515, 316);
+            gfx_line(515, 316, 514, 334);
+            gfx_line(514, 334, 493, 331);
+
+            gfx_line(494, 333, 510, 355);
 
             break;
         case 'A':
-        int ACoord[5][2] = {
-            {520, 354},
-            {530, 322},
-            {538, 355},
-            {533, 341},
-            {524, 339}
-        };
+            gfx_line(515, 355, 530, 315);
+            gfx_line(530, 315, 540, 355);
+            gfx_line(540, 355, 535, 335);
+            gfx_line(535, 335, 523, 335);
+        break;
+        case 'C':
+            gfx_line(605, 315, 580, 315);
+            gfx_line(580, 315, 580, 355);
+            gfx_line(580, 355, 605, 355);
+        break;
+        case 'E':
+            gfx_line(635, 315, 615, 315);
+            gfx_line(615, 315, 615, 355);
+            gfx_line(615, 355, 635, 355);
 
-        for (int i = 0; i < 4; i++) {
-            gfx_line(ACoord[i][0], ACoord[i][1], ACoord[i+1][0], ACoord[i+1][1]);
-        }
+            gfx_line(615, 335, 635, 335);
         break;
     }
 
@@ -1414,7 +1418,7 @@ int createMenu(int x, int y){
             if (c == 1){
                 int xPos = gfx_xpos();
                 int yPos = gfx_ypos();
-                //if (xPos > )
+                
                 printf("X: %i; Y: %i\n", xPos, yPos);
                 if (xPos >= 540 && xPos <= 740){
                     if(yPos >= 330 && yPos <= 390){
@@ -1431,12 +1435,12 @@ int createMenu(int x, int y){
                 }
             }
 
-        //return 1;
+        
         }
     }
 }
 
-// Main Function
+
 int main(){
     int screenX = 1280;
     int screenY = 830;
@@ -1448,25 +1452,25 @@ int main(){
     gfx_clear_color(128, 128, 128);
     gfx_clear();
     
-    // Prompt mainMenu/createMenu and proceed after start
+    
     int ret = createMenu(screenX, screenY);
     if (ret != 1) {return 1;}
 
         Card deck[52];
         int topCardIndex = 0;
 
-        // Create and shuffle the deck, then save to files
+        
         createDeck(deck);
         shuffleCards(deck);
 
-        // Read the decks from the files
+        
         readDeckFromFile("NewDeck.txt", deck);
         readDeckFromFile("ShuffledDeck.txt", deck);
 
-        // Game Loop Functionality
+        
         while (1) {
 
-            // Re-initializing
+            
             draw_P = 0;
             draw_D = 0;
 
@@ -1474,13 +1478,13 @@ int main(){
             gfx_clear();
             gfx_flush();
 
-            // Draw the casino floor background
+            
             for (int x = 0; x < screenX; x++) {
                 for (int y = 0; y < screenY; y++) {
                     if (((x / 20) % 2 == 0 && (y / 20) % 2 == 0) || ((x / 20) % 2 == 1 && (y / 20) % 2 == 1)) {
-                        gfx_color(20, 85, 20);  // Darker red
+                        gfx_color(20, 85, 20);  
                     } else {
-                        gfx_color(30, 100, 30);  // Softer red
+                        gfx_color(30, 100, 30);  
                     }
                     gfx_point(x, y);
                 }
@@ -1488,7 +1492,7 @@ int main(){
 
             gfx_flush();
 
-            // Draw the main table
+            
             int center_x = 650;
             int center_y = 375;
             int radius_x = 500;
@@ -1568,13 +1572,15 @@ int main(){
 
             characterDesign('X');
             characterDesign('I');
-            characterDesign('N');
+            characterDesign('N'); // Double Case
             characterDesign('S');
             characterDesign('U');
             characterDesign('R');
             characterDesign('A');
+            characterDesign('C');
+            characterDesign('E');
 
-            // Draw buttons for Hit and Stand using circular outlines
+            
             draw_button((screenX/2)-100, 600, "Stand");
             draw_button((screenX/2)+100, 600, "Hit");
             
@@ -1585,8 +1591,8 @@ int main(){
 
             gfx_text("Total:", x_between-33, 20, 2);
             gfx_line(x_between-33, 45, x_between+37, 45);
-        // gfx_text("2", x_between-15, 605, 2);
-            // between buttons ((screenX/2)+100)+(screenX/2)-100)/2; 600
+        
+            
 
             if (!hasEnoughCards(topCardIndex)) {
                 printf("Not enough cards in the deck. Creating and shuffling a new deck.\n");
@@ -1596,7 +1602,7 @@ int main(){
             }
 
 
-            // Initialize hands
+            
             Card playerHand[52];
             Card dealerHand[52];
             int playerHandSize = 0;
@@ -1606,21 +1612,21 @@ int main(){
             gfx_rectangle(510, 375, 110, 160);
             gfx_rectangle(510, 115, 110, 160);
 
-            // Deal initial cards to player and dealer
+            
             dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
             dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
             dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
             dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
-            // Calculate and print initial total values
+            
             int playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
             int dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
 
             
             displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
-            //draw_card("Person", 2, 9, 'H'); // Test Card
+            
 
-            // Check for Blackjack
+            
             bool playerBlackjack = checkBlackjack(playerTotal);
             bool dealerBlackjack = checkBlackjack(dealerTotal);
             char choice;
@@ -1644,17 +1650,17 @@ int main(){
                             double hitDist = sqrt((xPos - hitButtonX) * (xPos - hitButtonX) + (yPos - 600) * (yPos - 600));
 
                             if (standDist <= detectRad) {
-                                //printf("Stand button clicked!\n");
+                                
                                 choice = 'S';
                                 break;
                             } else if (hitDist <= detectRad) {
-                                //printf("Hit button clicked!\n");
+                                
                                 choice = 'H';
                                 break;
                             }
                         }
                     }
-                    //scanf(" %c", &choice);
+                    
                     if (choice == 'h' || choice == 'H') {
                         dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
                         playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
@@ -1692,7 +1698,7 @@ int main(){
                 }
                 bool d_hasAceSave = false;
 
-                    // Dealer's turn: Draw cards until total value is at least 17
+                    
                     while (dealerTotal < 17) {
                         dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
@@ -1715,14 +1721,14 @@ int main(){
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     }
 
-                    // Print final hands and totals
+                    
                     displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     gfx_flush();
-                    // Determine the winner
+                    
                     determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
                 
             }
-            // Ask the user if they want to start a new round
+            
             
             printf("\nDo you want to start a new round? (y/n): ");
             
@@ -1736,17 +1742,17 @@ int main(){
 
             gfx_text("YES", (515+40), 480, 2);
             gfx_rectangle(515, 465, 115, 50);
-            // 515 630
-            // 465 515
+            
+            
 
 
             gfx_text("NO", (575+120), 480, 2);
             gfx_rectangle(515+115+15, 465, 115, 50);
-            // 645 760
-            // 465 515
+            
+            
 
             gfx_flush();
-            // Unused Since Graphical Ouput
+            
             /*while (1){
                 scanf(" %c", &choice);
                 if (choice == 'n' || choice == 'N') {
@@ -1782,11 +1788,11 @@ int main(){
             if (exitGame==1){break;}
         }
     }
-    //}
+    
     return 0;
 }
 
-int mainMenu() { // Unused since Graphics
+int mainMenu() { 
     char currentCommand[10];
     char exitProcess[10];
 
@@ -1795,10 +1801,10 @@ int mainMenu() { // Unused since Graphics
         printf("b. Get Help on how to play the game\n");
         printf("c. Exit\n");
 
-        // Read the entire line
+        
         fgets(currentCommand, sizeof(currentCommand), stdin);
 
-        // Remove the newline character if present
+        
         currentCommand[strcspn(currentCommand, "\n")] = 0;
 
         if (strcmp(currentCommand, "c") == 0) {
@@ -1808,7 +1814,7 @@ int mainMenu() { // Unused since Graphics
             printf("You can choose to hit as many times as you want, but the dealer hits until he reaches atleast 17.\n");
             printf("You can stand your chosen cards.\n");
             fgets(exitProcess, sizeof(exitProcess), stdin);
-            // Checks if player presses Enter to go back to Main Menu
+            
             if (exitProcess[0] == '\n') {
                 continue;
             }
