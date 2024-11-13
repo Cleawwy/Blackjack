@@ -875,6 +875,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
               } else if (strcmp(playerHand[i].faceValue, "King") == 0){
                   drawnValue = 14;
               }
+              gfx_flush();
               draw_card("Person", pIter, drawnValue, playerHand[i].suit[0]);
               
               pIter++;
@@ -913,7 +914,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         printf("Total: %d or %d", playerTotal-10, playerTotal);
         int valX = (((1280/2)+(1280/2))/2)-25;
         if (playerTotal/10 == 1){
-            valX - 3;
+            valX - 6;
         }
         draw_value("Person", playerTotal, valX, 1);
     } else {
@@ -926,6 +927,8 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     } else {
         printf("\t\t\t\tTotal: %d", dealerTotal);
     }
+
+    gfx_flush();
 
     
 
@@ -971,34 +974,41 @@ bool checkBlackjack(int total) {
 // If-Else for Win/Lose Conditions
 void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool dealerBlackjack) {
     gfx_color(53, 101, 77);
-    gfx_fillrectangle((1280/2)-300, (830/2)-185, 600, 125);
+    gfx_fillrectangle((1280/2)-300, (830/2)-250, 600, 125);
     gfx_color(0, 0, 0);
-    gfx_rectangle((1280/2)-300, (830/2)-185, 600, 125);
+    gfx_rectangle((1280/2)-300, (830/2)-250, 600, 125);
 
     int midTextX, midTextY;
-    midTextX = -150 + (((1280/2)-300)+((1280/2)+300))/2;
-    midTextY = -135 + (((830/2)-185) + ((830/2)+185))/2;
+    midTextX = -125 + (((1280/2)-300)+((1280/2)+300))/2;
+    midTextY = -130 + (((830/2)-250) + ((830/2)+180))/2;
 
     if (playerBlackjack && dealerBlackjack) {
         printf("Both player and dealer have Blackjack! It's a draw.\n");
         gfx_text("Both player and dealer have Blackjack! It's a draw.", midTextX, midTextY, 2);
     } else if (playerBlackjack) {
         printf("Player has Blackjack! Player wins.\n");
+        gfx_text("Player has Blackjack! Player wins.", midTextX-80, midTextY-40, 2); // perfect
     } else if (dealerBlackjack) {
         printf("Dealer has Blackjack! Dealer wins.\n");
+        gfx_text("Dealer has Blackjack! Dealer wins.", midTextX-80, midTextY, 2); // perfect
     } else if (playerTotal > 21 && dealerTotal > 21) {
         printf("Both player and dealer bust! No one wins.\n");
+        gfx_text("Both player and dealer bust! No one wins.", midTextX-120, midTextY-30, 2); // perfect
     } else if (playerTotal > 21) {
         printf("Player busts! Dealer wins.\n");
-        gfx_text("Player busts! Dealer wins.", midTextX, midTextY, 2);
+        gfx_text("Player busts! Dealer wins.", midTextX-30, midTextY-30, 2); // perfect
     } else if (dealerTotal > 21) {
         printf("Dealer busts! Player wins.\n");
+        gfx_text("Dealer busts! Player wins.", midTextX-30, midTextY-30, 2); // perfect
     } else if (playerTotal > dealerTotal) {
         printf("Player wins with %d against dealer's %d.\n", playerTotal, dealerTotal);
+        gfx_text("Player wins! Dealer loses.", midTextX-30, midTextY-30, 2); // perfect
     } else if (dealerTotal > playerTotal) {
         printf("Dealer wins with %d against player's %d.\n", dealerTotal, playerTotal);
+        gfx_text("Dealer wins! Player loses.", midTextX-30, midTextY-30, 2); // perfect
     } else {
         printf("It's a draw with both having %d.\n", playerTotal);
+        gfx_text("It's a draw.", midTextX+50, midTextY-30, 2);
     }
     gfx_flush();
 }
@@ -1141,6 +1151,49 @@ int createHelpScreen(int x, int y){
     }
 }
 
+
+int createCreditsScreen(int x, int y){
+
+    gfx_clear_color(53, 101, 77);
+    gfx_clear();
+
+    gfx_color(137, 207, 240);
+    gfx_fillrectangle((x/2)-250,(y/2)-200, 500, 400);
+
+    gfx_color(0, 0, 0);
+    gfx_text("Credits", (x/2)-55, (y/2)-357/2, 2);
+
+    int midX = 680;
+    gfx_text("Game Developer    -    Mohammad Shebaro", midX-235, ((y/2)-245/2) + 25, 1);
+    gfx_text("Game Designer     -    Mohammad Shebaro", midX-235, ((y/2)-215/2) + 55, 1);
+    gfx_text("Graphic Artist    -    Mohammad Shebaro", midX-235, ((y/2)-185/2) + 85, 1);
+    gfx_text("Quality Assurance -    Mohammad Shebaro", midX-235, ((y/2)-155/2) + 115, 1);
+    gfx_text("Project Manager   -    Mohammad Shebaro", midX-235, ((y/2)-125/2) + 145, 1);
+    gfx_text("     (Mohammad Shebaro - 24004149)     ", midX-235, ((y/2)-125/2) + 175, 1);
+
+    gfx_rectangle((x/2)-475/2,(y/2)-375/2, 120, 60);
+    gfx_text("<- Back", ((x/2)-460/2)+10, (y/2)-(357/2)+10, 2);
+    gfx_flush();
+    
+    while (1){
+        int c = gfx_wait();
+        if (c == 1){
+            int xpos, ypos;
+
+            xpos = gfx_xpos();
+            ypos = gfx_ypos();
+            printf("%i %i \n", xpos, ypos);
+            if (xpos >= 404 && xpos <= 523){
+                if (ypos >= 230 && ypos <= 290) {
+                    gfx_clear_color(128, 128, 128);
+                    gfx_clear();
+                    return 1;
+                }
+            }
+        }
+    }
+}
+
 int createMenu(int x, int y){
     while (1){
         int scaleX = 200;
@@ -1171,15 +1224,17 @@ int createMenu(int x, int y){
 
         
         gfx_color(0, 0, 0);      
-        gfx_text("A Blackjack Experience", (x/2)-135, y-570, 2);
+        gfx_text("A Blackjack Experience", (x/2)-135, y-590, 2);
 
         gfx_color(0, 0, 0);
-        gfx_rectangle((x/2)-scaleX/2, y-450, scaleX, scaleY);
-        gfx_text("Start", buttonXAlignment, y-435, 2);
-        gfx_rectangle((x/2)-scaleX/2, y-350, scaleX, scaleY);
-        gfx_text("Help", buttonXAlignment, y-335, 2);
-        gfx_rectangle((x/2)-scaleX/2, y-250, scaleX, scaleY);
-        gfx_text("Credits", buttonXAlignment-15, y-235, 2);
+        gfx_rectangle((x/2)-scaleX/2, y-500, scaleX, scaleY);
+        gfx_text("Start", buttonXAlignment, y-485, 2);
+        gfx_rectangle((x/2)-scaleX/2, y-400, scaleX, scaleY);
+        gfx_text("Help", buttonXAlignment+4, y-385, 2);
+        gfx_rectangle((x/2)-scaleX/2, y-300, scaleX, scaleY);
+        gfx_text("Credits", buttonXAlignment-15+2, y-285, 2);
+        gfx_rectangle((x/2)-scaleX/2, y-200, scaleX, scaleY);
+        gfx_text("Exit", buttonXAlignment-15+19, y-185, 2);
         gfx_color(255, 255, 255);
 
         while (1){
@@ -1188,16 +1243,18 @@ int createMenu(int x, int y){
                 int xPos = gfx_xpos();
                 int yPos = gfx_ypos();
                 //if (xPos > )
-                //printf("X: %i; Y: %i\n", xPos, yPos);
+                printf("X: %i; Y: %i\n", xPos, yPos);
                 if (xPos >= 540 && xPos <= 740){
-                    if(yPos >= 380 && yPos <= 440){
-                        //printf("Start Button Clicked!\n");
+                    if(yPos >= 330 && yPos <= 390){
                         return 1;
-                    } else if(yPos >= 480 && yPos <= 540){
+                    } else if(yPos >= 440 && yPos <= 490){
                         int ret = createHelpScreen(x, y);
                         if (ret == 1){break;}
-                    } else if(yPos >= 580 && yPos <= 640){
-                        //printf("Credits Button Clicked!\n");
+                    } else if(yPos >= 530 && yPos <= 590){
+                        int ret = createCreditsScreen(x, y);
+                        if (ret == 1){break;}
+                    } else if(yPos >= 630 && yPos <= 690){
+                        return 0;
                     }
                 }
             }
@@ -1213,65 +1270,15 @@ int main(){
     int screenY = 830;
 
     gfx_open(screenX, screenY, "A Blackjack Experience");
+
+    while (1){
+
     gfx_clear_color(128, 128, 128);
     gfx_clear();
     
     // Prompt mainMenu/createMenu and proceed after start
     int ret = createMenu(screenX, screenY);
     if (ret != 1) {return 1;}
-    gfx_clear();
-
-    // Draw the casino floor background
-    for (int x = 0; x < screenX; x++) {
-        for (int y = 0; y < screenY; y++) {
-            if (((x / 20) % 2 == 0 && (y / 20) % 2 == 0) || ((x / 20) % 2 == 1 && (y / 20) % 2 == 1)) {
-                gfx_color(20, 85, 20);  // Darker red
-            } else {
-                gfx_color(30, 100, 30);  // Softer red
-            }
-            gfx_point(x, y);
-        }
-    }
-
-    // Draw the main table
-    int center_x = 650;
-    int center_y = 375;
-    int radius_x = 500;
-    int radius_y = 350;
-
-    int border_thickness = 30;
-    int i = 29;
-    gfx_color(81, 51, 17);
-    printf("%i\n", i);
-    for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
-        for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
-            gfx_point(x, y);
-        }
-    }
-
-    gfx_color(25,70,25);
-    for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-        for (int y = center_y; y <= center_y + radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x)); y++) {
-            gfx_point(x, y);
-        }
-    }
-
-    for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-        for (int y = 0; y <= center_y; y++) {
-            gfx_point(x, y);
-        }
-    }
-
-    // Draw buttons for Hit and Stand using circular outlines
-    draw_button((screenX/2)-100, 600, "Stand");
-    draw_button((screenX/2)+100, 600, "Hit");
-    
-    
-    int x_between = ((screenX/2)+(screenX/2))/2;
-    gfx_text("Total:", x_between-33, 570, 2);
-    gfx_line(x_between-33, 595, x_between+37, 595);
-   // gfx_text("2", x_between-15, 605, 2);
-    // between buttons ((screenX/2)+100)+(screenX/2)-100)/2; 600
 
         Card deck[52];
         int topCardIndex = 0;
@@ -1286,6 +1293,68 @@ int main(){
 
         // Game Loop Functionality
         while (1) {
+
+            // Re-initializing
+            draw_P = 0;
+            draw_D = 0;
+
+            gfx_clear_color(128, 128, 128);
+            gfx_clear();
+            gfx_flush();
+
+            // Draw the casino floor background
+            for (int x = 0; x < screenX; x++) {
+                for (int y = 0; y < screenY; y++) {
+                    if (((x / 20) % 2 == 0 && (y / 20) % 2 == 0) || ((x / 20) % 2 == 1 && (y / 20) % 2 == 1)) {
+                        gfx_color(20, 85, 20);  // Darker red
+                    } else {
+                        gfx_color(30, 100, 30);  // Softer red
+                    }
+                    gfx_point(x, y);
+                }
+            }
+
+            gfx_flush();
+
+            // Draw the main table
+            int center_x = 650;
+            int center_y = 375;
+            int radius_x = 500;
+            int radius_y = 350;
+
+            int border_thickness = 30;
+            int i = 29;
+            gfx_color(81, 51, 17);
+            printf("%i\n", i);
+            for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
+                for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+            gfx_color(25,70,25);
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
+                for (int y = center_y; y <= center_y + radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x)); y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
+                for (int y = 0; y <= center_y; y++) {
+                    gfx_point(x, y);
+                }
+            }
+
+            // Draw buttons for Hit and Stand using circular outlines
+            draw_button((screenX/2)-100, 600, "Stand");
+            draw_button((screenX/2)+100, 600, "Hit");
+            
+            
+            int x_between = ((screenX/2)+(screenX/2))/2;
+            gfx_text("Total:", x_between-33, 570, 2);
+            gfx_line(x_between-33, 595, x_between+37, 595);
+        // gfx_text("2", x_between-15, 605, 2);
+            // between buttons ((screenX/2)+100)+(screenX/2)-100)/2; 600
 
             if (!hasEnoughCards(topCardIndex)) {
                 printf("Not enough cards in the deck. Creating and shuffling a new deck.\n");
@@ -1420,11 +1489,26 @@ int main(){
             // Ask the user if they want to start a new round
             
             printf("\nDo you want to start a new round? (y/n): ");
-            int exitGame = 0;
+            
             gfx_color(53, 101, 77);
-            gfx_fillrectangle((1280/2)-150, (830/2)-45, 300, 250);
+            gfx_fillrectangle((1280/2)-150, (830/2)-120, 300, 250);
             gfx_color(0, 0, 0);
-            gfx_rectangle((1280/2)-150, (830/2)-45, 300, 250);
+            gfx_rectangle((1280/2)-150, (830/2)-120, 300, 250);
+
+            gfx_text("Would you like to start", 505, 330, 2);
+            gfx_text("a new game?", 580, 360, 2);
+
+            gfx_text("YES", (515+40), 480, 2);
+            gfx_rectangle(515, 465, 115, 50);
+            // 515 630
+            // 465 515
+
+
+            gfx_text("NO", (575+120), 480, 2);
+            gfx_rectangle(515+115+15, 465, 115, 50);
+            // 645 760
+            // 465 515
+
             gfx_flush();
             // Unused Since Graphical Ouput
             /*while (1){
@@ -1439,10 +1523,29 @@ int main(){
                 } else {
                     printf("Please enter a valid character (y/n): ");
                 }
-            }
-            if (exitGame==1){break;}*/
-            while(1){};
+            }*/
+            int exitGame = 0;
+            while(1){
+                int c = gfx_wait();
+                if (c==1){
+                    int x, y;
+                    x = gfx_xpos();
+                    y = gfx_ypos();
+                    if (y >= 465 && y<= 515){
+                        if (x >= 515 && x <= 630){
+                            break;
+                        } else if (x >= 645 && x <= 760){
+                            remove("NewDeck.txt");
+                            remove("ShuffledDeck.txt");
+                            exitGame = 1;
+                            break;
+                        }
+                    }
+                }
+            };
+            if (exitGame==1){break;}
         }
+    }
     //}
     return 0;
 }
