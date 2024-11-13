@@ -42,43 +42,6 @@ void readDeckFromFile(const char *filename, Card deck[52]);
 
 // Graphics
 void clear_text(char* player);
-
-void createMenu(int x, int y){
-  int scaleX = 200;
-  int scaleY = 60;
-  
-  gfx_text("A Blackjack Experience", (x/2)-135, y-600, 2);
-  gfx_color(255, 255, 255);
-  
-  int buttonXAlignment = (x/2)-25;
- 
-
-  
-  int middleYOffset = (y);
-  for (int i=0; i<6; i++){
-  middleYOffset+=400;
-  
-  gfx_fillrectangle((x/2)-scaleX, (y/2)-scaleY-200, 400, 600);
-  gfx_rectangle((x/2)-scaleX, (y/2)-scaleY-200, 400, 600);
-  }
-  
-  for (int j=0; j<=10; j++){
-      for (int i=0; i<=6; i++){
-        gfx_rectangle(-50+125*j, -50-(50*j)+225*i, 100, 200);
-    }
-  }
-  
-  gfx_color(0, 0, 0);
-  gfx_rectangle((x/2)-scaleX/2, y-450, scaleX, scaleY);
-  gfx_text("Start", buttonXAlignment, y-435, 2);
-  gfx_rectangle((x/2)-scaleX/2, y-350, scaleX, scaleY);
-  gfx_text("Help", buttonXAlignment, y-335, 2);
-  gfx_rectangle((x/2)-scaleX/2, y-250, scaleX, scaleY);
-  gfx_text("Credits", buttonXAlignment-15, y-235, 2);
-  gfx_color(255, 255, 255);
-  
-  }
-  
   
 void draw_value(char* player, int value, int midpoint){
   char numStr[2];
@@ -539,6 +502,55 @@ void draw_card(char *player, int card_number, int value, char suit) {
             draw_number_or_letter(x + 5, y + 5, r, g, b, value);
             draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
         }
+
+        /*
+        x = 300;
+        y = 300;
+
+
+        x = x + (MAX_CARDS / 2) * (card_width + 10);
+        draw_card_outline(x, y, card_width, card_height);
+
+        r = 255; g = 0; b = 0;
+
+        draw_number_or_letter(x + 5, y + 5, r, g, b, value);
+        draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
+
+        draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
+        draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
+        draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
+        
+        draw_symbol(x + card_width / 2, y + card_height / 2 - 30, suit);
+        draw_symbol(x + card_width / 2, y + card_height / 2 + 10, suit);
+        
+        draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
+        draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
+        draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
+        */
+
+        /*
+
+        int card_width = 100;
+        int card_height = 150;
+        
+        int x = 550;
+        int y = 150;
+        gfx_color(0, 0, 0);
+        gfx_rectangle(x+10, y+20, card_width-20, card_height-40);
+        
+        draw_number_or_letter(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
+        draw_number_or_letter(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
+        
+        draw_number_or_letter(x + 5, y + 5, r, g, b, value);
+        draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
+        gfx_color(0, 0, 0);  // Black border
+        gfx_rectangle(x, y, card_width, card_height);
+        gfx_rectangle(x-1, y-1, card_width, card_height);
+        draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
+
+        gfx_flush();
+
+        */
         
         switch (value){
             case 2:
@@ -601,7 +613,7 @@ void draw_card(char *player, int card_number, int value, char suit) {
             case 9:
                   int oldY = y;
                   if (suit == 'D'){
-                      y += 3;
+                      y += 7;
                   }
                   draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + 5, suit);
                   draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + 40, suit);
@@ -831,6 +843,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
                   drawnValue = 14;
               }
               draw_card("Person", pIter, drawnValue, playerHand[i].suit[0]);
+              
               pIter++;
             
             if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11) {
@@ -937,18 +950,160 @@ void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, boo
     }
 }
 
+// Main Menu Function (GRAPHICS)
+
+int createHelpScreen(int x, int y){
+    gfx_clear_color(53, 101, 77);
+    gfx_clear();
+
+    gfx_color(137, 207, 240);
+    gfx_fillrectangle((x/2)-500,(y/2)-400, 1000, 800);
+
+
+    gfx_color(0, 0, 0);
+    gfx_rectangle((x/2)-475,(y/2)-375, 120, 60);
+
+
+    gfx_text("<- Back", (x/2)-460, (y/2)-357, 2);
+
+
+    gfx_text("Blackjack", (x/2)-55, (y/2)-357, 2);
+
+    gfx_text("Card Values", 300, 250, 1);
+    gfx_text("- Number Cards (2-10): Face value (e.g., 2 is worth 2 points)", 315, 280, 1);
+    gfx_text("- Face Cards (J, Q, K): Worth 10 points each.", 315, 310, 1);
+    gfx_text("- Aces: Can be worth either 1 point or 11 points.", 315, 340, 1);
+
+    gfx_line((x/2)-59, (y/2)-330, (x/2)+54, (y/2)-330);
+
+    int card_width = 100;
+    int card_height = 150;
+    
+    x = -150;
+    y = 250;
+    int value = 11;
+    char suit = 'S';
+
+    x = x + (MAX_CARDS / 2) * (card_width + 10);
+    draw_card_outline(x, y, card_width, card_height);
+
+    int r, g, b;
+    r = 0; g = 0; b = 0;
+
+    draw_large_A(x + 5, y + 3, r, g, b);
+    draw_large_A(x + card_width - 12, y + card_height - 19, r, g, b);
+    gfx_color(0, 0, 0);
+    gfx_rectangle(x, y, card_width, card_height);
+    gfx_rectangle(x-1, y-1, card_width, card_height);
+    draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
+
+    x = -150;
+    y = 450;
+    value = 8;
+    suit = 'H';
+
+    
+    x = x + (MAX_CARDS / 2) * (card_width + 10);
+    draw_card_outline(x, y, card_width, card_height);
+
+    r = 255; g = 0; b = 0;
+
+    draw_number_or_letter(x + 5, y + 5, r, g, b, value);
+    draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
+
+    gfx_color(0, 0, 0);
+    gfx_rectangle(x, y, card_width, card_height);
+    gfx_rectangle(x-1, y-1, card_width, card_height);
+
+    draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
+    draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
+    draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
+    
+    draw_symbol(x + card_width / 2, y + card_height / 2 - 30, suit);
+    draw_symbol(x + card_width / 2, y + card_height / 2 + 10, suit);
+    
+    draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
+    draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
+    draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
+
+
+    gfx_flush();
+    while (1){
+        //return 1;
+    }
+}
+
+int createMenu(int x, int y){
+    while (1){
+        int scaleX = 200;
+        int scaleY = 60;
+        
+        gfx_text("A Blackjack Experience", (x/2)-135, y-600, 2);
+        gfx_color(255, 255, 255);
+        
+        int buttonXAlignment = (x/2)-25;
+        
+
+        
+        int middleYOffset = (y);
+        for (int i=0; i<6; i++){
+        middleYOffset+=400;
+        
+        gfx_fillrectangle((x/2)-scaleX, (y/2)-scaleY-200, 400, 600);
+        gfx_rectangle((x/2)-scaleX, (y/2)-scaleY-200, 400, 600);
+        }
+        
+        for (int j=0; j<=10; j++){
+            for (int i=0; i<=6; i++){
+                gfx_rectangle(-50+125*j, -50-(50*j)+225*i, 100, 200);
+            }
+        }
+        
+        gfx_color(0, 0, 0);
+        gfx_rectangle((x/2)-scaleX/2, y-450, scaleX, scaleY);
+        gfx_text("Start", buttonXAlignment, y-435, 2);
+        gfx_rectangle((x/2)-scaleX/2, y-350, scaleX, scaleY);
+        gfx_text("Help", buttonXAlignment, y-335, 2);
+        gfx_rectangle((x/2)-scaleX/2, y-250, scaleX, scaleY);
+        gfx_text("Credits", buttonXAlignment-15, y-235, 2);
+        gfx_color(255, 255, 255);
+
+        while (1){
+            int c = gfx_wait();
+            if (c == 1){
+                int xPos = gfx_xpos();
+                int yPos = gfx_ypos();
+                //if (xPos > )
+                //printf("X: %i; Y: %i\n", xPos, yPos);
+                if (xPos >= 540 && xPos <= 740){
+                    if(yPos >= 380 && yPos <= 440){
+                        //printf("Start Button Clicked!\n");
+                        return 1;
+                    } else if(yPos >= 480 && yPos <= 540){
+                        createHelpScreen(x, y);
+                    } else if(yPos >= 580 && yPos <= 640){
+                        //printf("Credits Button Clicked!\n");
+                    }
+                }
+            }
+
+        //return 1;
+        }
+    }
+}
+
 // Main Function
 int main(){
-    // Prompt mainMenu and proceed after start
-    //int ret = mainMenu();
-    //if (ret == 1) {
-    
-
     int screenX = 1280;
     int screenY = 830;
 
     gfx_open(screenX, screenY, "A Blackjack Experience");
     gfx_clear_color(128, 128, 128);
+    gfx_clear();
+    
+    // Prompt mainMenu/createMenu and proceed after start
+    int ret = createMenu(screenX, screenY);
+    if (ret != 1) {return 1;}
     gfx_clear();
 
     // Draw the casino floor background
@@ -1043,6 +1198,7 @@ int main(){
 
             draw_value("Person", playerTotal, ((screenX/2)+(screenX/2))/2);
             displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
+            //draw_card("Person", 2, 9, 'D'); // Test Card
 
             // Check for Blackjack
             bool playerBlackjack = checkBlackjack(playerTotal);
@@ -1057,7 +1213,7 @@ int main(){
                     while (1) {
                         char c = gfx_wait();
                         if (c == 1) {
-                            printf("%d %d\n", gfx_xpos(), gfx_ypos());
+                            //printf("%d %d\n", gfx_xpos(), gfx_ypos());
                             int xPos = gfx_xpos();
                             int yPos = gfx_ypos();
                             int standButtonX = (screenX / 2) - 100;
@@ -1068,11 +1224,11 @@ int main(){
                             double hitDist = sqrt((xPos - hitButtonX) * (xPos - hitButtonX) + (yPos - 600) * (yPos - 600));
 
                             if (standDist <= detectRad) {
-                                printf("Stand button clicked!\n");
+                                //printf("Stand button clicked!\n");
                                 choice = 'S';
                                 break;
                             } else if (hitDist <= detectRad) {
-                                printf("Hit button clicked!\n");
+                                //printf("Hit button clicked!\n");
                                 choice = 'H';
                                 break;
                             }
@@ -1153,6 +1309,7 @@ int main(){
             
             printf("\nDo you want to start a new round? (y/n): ");
             int exitGame = 0;
+            // Unused Since Graphical Ouput
             /*while (1){
                 scanf(" %c", &choice);
                 if (choice == 'n' || choice == 'N') {
@@ -1173,7 +1330,7 @@ int main(){
     return 0;
 }
 
-int mainMenu() {
+int mainMenu() { // Unused since Graphics
     char currentCommand[10];
     char exitProcess[10];
 
