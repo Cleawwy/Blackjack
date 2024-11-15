@@ -18,6 +18,7 @@
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "gfx.h"
 
@@ -42,6 +43,12 @@ void readDeckFromFile(const char *filename, Card deck[52]);
 
 
 void clear_text(char* player);
+
+void removeFiles(){
+    remove("NewDeck.txt");
+    remove("ShuffledDeck.txt");
+    exit(0);
+}
   
 void draw_value(char* player, int value, int midpoint, int aceCalc){
   char numStr[20];
@@ -1208,7 +1215,7 @@ int createCreditsScreen(int x, int y){
 
             xpos = gfx_xpos();
             ypos = gfx_ypos();
-            printf("%i %i \n", xpos, ypos);
+            //printf("%i %i \n", xpos, ypos);
             if (xpos >= 404 && xpos <= 523){
                 if (ypos >= 230 && ypos <= 290) {
                     gfx_clear_color(128, 128, 128);
@@ -1476,7 +1483,7 @@ int createMenu(int x, int y){
                 int xPos = gfx_xpos();
                 int yPos = gfx_ypos();
                 
-                printf("X: %i; Y: %i\n", xPos, yPos);
+                //printf("X: %i; Y: %i\n", xPos, yPos);
                 if (xPos >= 540 && xPos <= 740){
                     if(yPos >= 330 && yPos <= 390){
                         return 1;
@@ -1499,6 +1506,9 @@ int createMenu(int x, int y){
 
 
 int main(){
+
+    signal(SIGINT, removeFiles);  
+
     int screenX = 1280;
     int screenY = 830;
 
@@ -1759,7 +1769,7 @@ int main(){
                     while (1) {
                         char c = gfx_wait();
                         if (c == 1) {
-                            printf("%d %d\n", gfx_xpos(), gfx_ypos());
+                            //printf("%d %d\n", gfx_xpos(), gfx_ypos());
                             int xPos = gfx_xpos();
                             int yPos = gfx_ypos();
                             int standButtonX = (screenX / 2) - 110;
