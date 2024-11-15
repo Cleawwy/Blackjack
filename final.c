@@ -755,8 +755,12 @@ void clear_text(char* player){
 
 void draw_button(int x, int y, char *text) {
     
+    gfx_color(25, 80, 25);
+    gfx_fillcircle(x, y, 100);
+
     gfx_color(0, 0, 0);
     gfx_circle(x, y, 100);
+    gfx_circle(x, y, 120);
 
     
     if (strcmp(text, "Hit") == 0){
@@ -922,8 +926,8 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     if (playerDuality == true){
         printf("Total: %d or %d", playerTotal-10, playerTotal);
         int valX = (((1280/2)+(1280/2))/2)-25;
-        if (playerTotal/10 == 1 || playerTotal/10 == 2){
-            valX - 8 + 2*playerTotal/10;
+        if (playerTotal/10 == 2){
+            valX -= 4; //- Offset;
         }
         draw_value("Person", playerTotal, valX, 1);
     } else {
@@ -933,8 +937,8 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
 
     if (dealerDuality == true){
         int valX = (((1280/2)+(1280/2))/2)-25;
-        if (dealerTotal/10 == 1 || dealerTotal/10 == 2){
-            valX - 8;
+        if (dealerTotal/10 == 2){
+            valX -= 4;
         }
         draw_value("Dealer", dealerTotal, valX, 1);
         printf("\t\t\t\tTotal: %d or %d", dealerTotal-10, dealerTotal);
@@ -987,7 +991,7 @@ bool checkBlackjack(int total) {
 }
 
 
-void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool dealerBlackjack) {
+int determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool dealerBlackjack) {
     gfx_color(53, 101, 77);
     gfx_fillrectangle((1280/2)-300, (830/2)-250, 600, 125);
     gfx_color(0, 0, 0);
@@ -999,33 +1003,40 @@ void determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, boo
 
     if (playerBlackjack && dealerBlackjack) {
         printf("Both player and dealer have Blackjack! It's a draw.\n");
-        gfx_text("Both player and dealer have Blackjack! It's a draw.", midTextX, midTextY, 2);
+        gfx_text("Both player and dealer have Blackjack!", midTextX-80, midTextY-40, 2);
     } else if (playerBlackjack) {
         printf("Player has Blackjack! Player wins.\n");
-        gfx_text("Player has Blackjack! Player wins.", midTextX-80, midTextY-40, 2); 
+        gfx_text("Player has Blackjack! Player wins.", midTextX-80, midTextY-40, 2);
+        return 0;
     } else if (dealerBlackjack) {
         printf("Dealer has Blackjack! Dealer wins.\n");
-        gfx_text("Dealer has Blackjack! Dealer wins.", midTextX-80, midTextY, 2); 
+        gfx_text("Dealer has Blackjack! Dealer wins.", midTextX-80, midTextY-40, 2); 
+        return 1;
     } else if (playerTotal > 21 && dealerTotal > 21) {
         printf("Both player and dealer bust! No one wins.\n");
         gfx_text("Both player and dealer bust! No one wins.", midTextX-120, midTextY-30, 2); 
     } else if (playerTotal > 21) {
         printf("Player busts! Dealer wins.\n");
-        gfx_text("Player busts! Dealer wins.", midTextX-30, midTextY-30, 2); 
+        gfx_text("Player busts! Dealer wins.", midTextX-30, midTextY-30, 2);
+        return 1;
     } else if (dealerTotal > 21) {
         printf("Dealer busts! Player wins.\n");
         gfx_text("Dealer busts! Player wins.", midTextX-30, midTextY-30, 2); 
+        return 0;
     } else if (playerTotal > dealerTotal) {
         printf("Player wins with %d against dealer's %d.\n", playerTotal, dealerTotal);
-        gfx_text("Player wins! Dealer loses.", midTextX-30, midTextY-30, 2); 
+        gfx_text("Player wins! Dealer loses.", midTextX-30, midTextY-30, 2);
+        return 0;
     } else if (dealerTotal > playerTotal) {
         printf("Dealer wins with %d against player's %d.\n", dealerTotal, playerTotal);
-        gfx_text("Dealer wins! Player loses.", midTextX-30, midTextY-30, 2); 
+        gfx_text("Dealer wins! Player loses.", midTextX-30, midTextY-30, 2);
+        return 1;
     } else {
         printf("It's a draw with both having %d.\n", playerTotal);
         gfx_text("It's a draw.", midTextX+50, midTextY-30, 2);
     }
     gfx_flush();
+    return 3;
 }
 
 
@@ -1312,29 +1323,35 @@ void characterDesign(char value){
             break;
         case 'S':
            int Scoordinates[7][2] = {
-            {453, 313},
-            {437, 312},
-            {436, 326},
-            {454, 328},
-            {451, 345},
-            {450, 349},
+            {456, 310},
+            {439, 307},
+            {436, 331},
+            {453, 332},
+            {451, 351},
+            {432, 349},
             {433, 347}
         };
 
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 gfx_line(Scoordinates[i][0], Scoordinates[i][1], Scoordinates[i+1][0], Scoordinates[i+1][1]);
             }
+
+            gfx_line(750, 319, 733, 319);
+            gfx_line(733, 319, 733, 338);
+            gfx_line(733, 338, 751, 338);
+            gfx_line(751, 338, 751, 356);
+            gfx_line(751, 356, 733, 356);
+
+            gfx_line(570, 0, 570, 87);
+            gfx_line(570, 87, 638, 116);
+            gfx_line(638, 116, 706, 87);
+            gfx_line(706, 87, 706, 0);
+
             break;
         case 'U':
-            int Ucoordinates[4][2] = {
-                {465, 313},
-                {462, 349},
-                {476, 350},
-                {482, 317}
-            };
-            for (int i = 0; i < 3; i++) {
-                gfx_line(Ucoordinates[i][0], Ucoordinates[i][1], Ucoordinates[i+1][0], Ucoordinates[i+1][1]);
-            }
+            gfx_line(467, 311, 462, 351);
+            gfx_line(462, 351, 483, 353);
+            gfx_line(483, 353, 486, 315);
             break;
         case 'R':
 
@@ -1352,6 +1369,11 @@ void characterDesign(char value){
             gfx_line(530, 315, 540, 355);
             gfx_line(540, 355, 535, 335);
             gfx_line(535, 335, 523, 335);
+
+            gfx_line(686, 339, 696, 339);
+            gfx_line(681, 357, 690, 316);
+            gfx_line(690, 316, 701, 356);
+
         break;
         case 'C':
             gfx_line(605, 315, 580, 315);
@@ -1365,6 +1387,40 @@ void characterDesign(char value){
 
             gfx_line(615, 335, 635, 335);
         break;
+        case 'P':
+            gfx_line(655, 357, 655, 315);
+            gfx_line(655, 315, 674, 315);
+            gfx_line(674, 315, 674, 335);
+            gfx_line(674, 335, 655, 335);
+            break;
+        case 'Y':
+            gfx_line(716, 337, 716, 355);
+            gfx_line(716, 337, 706, 318);
+            gfx_line(716, 335, 723, 317);
+            break;
+        case 'L':
+            gfx_line(766, 318, 785, 318);
+            gfx_line(785, 317, 785, 336);
+            gfx_line(785, 337, 767, 337);
+            gfx_line(768, 339, 768, 357);
+            gfx_line(768, 357, 786, 355);
+
+            gfx_line(795, 339, 817, 338);
+
+            gfx_line(821, 317, 850, 315);
+            gfx_line(835, 317, 836, 351);
+
+            gfx_line(859, 315, 878, 313);
+            gfx_line(879, 313, 882, 347);
+            gfx_line(882, 347, 861, 350);
+            gfx_line(861, 352, 859, 314);
+
+            gfx_line(888, 334, 910, 329);
+
+            gfx_line(918, 344, 946, 341);
+            gfx_line(914, 319, 930, 307);
+            gfx_line(930, 307, 932, 344);
+            break;
     }
 
 }
@@ -1449,6 +1505,9 @@ int main(){
 
     while (1){
 
+    int playerScore = 0;
+    int dealerScore = 0;
+
     gfx_clear_color(128, 128, 128);
     gfx_clear();
     
@@ -1469,8 +1528,6 @@ int main(){
 
         
         while (1) {
-
-            
             draw_P = 0;
             draw_D = 0;
 
@@ -1533,6 +1590,7 @@ int main(){
                     gfx_point(x, y);
                 }
             }
+            
 
             radius_x += 30;
             radius_y += 30;
@@ -1579,10 +1637,24 @@ int main(){
             characterDesign('A');
             characterDesign('C');
             characterDesign('E');
+            characterDesign('P');
+            characterDesign('Y');
+            characterDesign('L');
+
+            gfx_color(255, 255, 0);
+            for (int i = 0; i <= 80; i++){
+                gfx_point(135, 5*i);
+            }
+
+            gfx_color(0, 0, 0);
+            char DisplayedScore[30];
+            sprintf(DisplayedScore, "(Player) %d - %d (Dealer)", playerScore, dealerScore);
+            gfx_text(DisplayedScore, 800, 20, 2);
+            gfx_flush();
 
             
-            draw_button((screenX/2)-100, 600, "Stand");
-            draw_button((screenX/2)+100, 600, "Hit");
+            draw_button((screenX/2)-110, 600, "Stand");
+            draw_button((screenX/2)+110, 600, "Hit");
             
             
             int x_between = ((screenX/2)+(screenX/2))/2;
@@ -1632,9 +1704,15 @@ int main(){
             char choice;
 
             if (playerBlackjack || dealerBlackjack) {
-                determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
+                int Winner = determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
+                if (Winner == 0){
+                    playerScore += 1;
+                } else if (Winner == 1){
+                    dealerScore += 1;
+                }
             } else {
                 while (1) {
+                    gfx_text("Turn: Player (YOU)", 250, 20, 2);
                     printf("\nDo you want to Hit or Stand? (h/s): ");
                     while (1) {
                         char c = gfx_wait();
@@ -1642,8 +1720,8 @@ int main(){
                             printf("%d %d\n", gfx_xpos(), gfx_ypos());
                             int xPos = gfx_xpos();
                             int yPos = gfx_ypos();
-                            int standButtonX = (screenX / 2) - 100;
-                            int hitButtonX = (screenX / 2) + 100;
+                            int standButtonX = (screenX / 2) - 110;
+                            int hitButtonX = (screenX / 2) + 110;
                             int detectRad = 50;
                             
                             double standDist = sqrt((xPos - standButtonX) * (xPos - standButtonX) + (yPos - 600) * (yPos - 600));
@@ -1690,6 +1768,12 @@ int main(){
                         playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     } else if (choice == 's' || choice == 'S') {
+                        gfx_color(25, 70, 25);
+                        gfx_fillrectangle(250, 20, 300, 30);
+                        gfx_flush();
+                        gfx_color(0, 0, 0);
+                        gfx_text("Turn: Dealer (BOT)", 250, 20, 2);
+                        gfx_flush();
                         printf("Player stands.\n");
                         break;
                     } else {
@@ -1725,7 +1809,12 @@ int main(){
                     displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     gfx_flush();
                     
-                    determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
+                    int Winner = determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
+                    if (Winner == 0){
+                        playerScore += 1;
+                    } else if(Winner == 1){
+                        dealerScore += 1;
+                    }
                 
             }
             
