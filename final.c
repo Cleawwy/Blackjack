@@ -913,6 +913,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
             } else if (strcmp(dealerHand[i].faceValue, "King") == 0){
                 drawnValue = 14;
             }
+            usleep(100000);
             draw_card("Dealer", dIter, drawnValue, dealerHand[i].suit[0]);
             dIter++;
             if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11) {
@@ -927,7 +928,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         printf("Total: %d or %d", playerTotal-10, playerTotal);
         int valX = (((1280/2)+(1280/2))/2)-25;
         if (playerTotal/10 == 2){
-            valX -= 4; //- Offset;
+            valX -= 4; 
         }
         draw_value("Person", playerTotal, valX, 1);
     } else {
@@ -1592,6 +1593,7 @@ int main(){
             }
             
 
+
             radius_x += 30;
             radius_y += 30;
 
@@ -1626,11 +1628,56 @@ int main(){
                 }
             }
 
+            gfx_color(255, 255, 0); 
+
+            int num_dots_curve = 75; 
+            double radius_x_inner = radius_x - border_thickness / 2; 
+            double radius_y_inner = radius_y - border_thickness / 2; 
+
+
+            for (int i = 0; i <= num_dots_curve; i++) {
+                double t = M_PI * i / num_dots_curve; 
+
+                
+                int x = center_x + (int)(radius_x_inner * cos(t));
+                int y = center_y + (int)(radius_y_inner * sin(t));
+
+                gfx_point(x, y); 
+            }
+
+
+            int y_start = center_y + radius_y_inner; 
+            int y_end = 0; 
+            int num_dots_vertical = num_dots_curve / 2; 
+            int vertical_spacing = (y_start - y_end) / num_dots_vertical; 
+
+
+            int x_left = center_x - radius_x_inner; 
+            for (int i = 0; i <= num_dots_vertical; i++) {
+                int y = y_start - i * vertical_spacing; 
+
+                if (y < y_end) break; 
+
+                gfx_point(x_left, y-350); 
+            }
+
+
+            int x_right = center_x + radius_x_inner; 
+            for (int i = 0; i <= num_dots_vertical; i++) {
+                int y = y_start - i * vertical_spacing; 
+
+                if (y < y_end) break; 
+
+                gfx_point(x_right, y-350); 
+            }
+
+
+
             gfx_flush();
 
             characterDesign('X');
             characterDesign('I');
-            characterDesign('N'); // Double Case
+            characterDesign('N'); 
             characterDesign('S');
             characterDesign('U');
             characterDesign('R');
@@ -1640,11 +1687,6 @@ int main(){
             characterDesign('P');
             characterDesign('Y');
             characterDesign('L');
-
-            gfx_color(255, 255, 0);
-            for (int i = 0; i <= 80; i++){
-                gfx_point(135, 5*i);
-            }
 
             gfx_color(0, 0, 0);
             char DisplayedScore[30];
