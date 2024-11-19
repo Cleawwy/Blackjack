@@ -1728,26 +1728,26 @@ int main(){
                         }
                     }
                     
+                    // Inside the hit logic for the player
                     if (choice == 'h' || choice == 'H') {
                         dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
                         playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
                         
                         bool p_hasAceSave = false;
-                        for (int i = 0; i<=playerHandSize-1; i++){
-                            if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11){
+                        for (int i = 0; i < playerHandSize; i++) {
+                            if (playerHand[i].faceValue == 1 && playerHand[i].cardValue == 11) { // Assuming 1 is used for Ace in the array
                                 p_hasAceSave = true;
                             }
                         }
-                    
+
                         if (playerTotal > 21) {
-                            if (p_hasAceSave == true){
-                                for (int i = 0; i<=playerHandSize-1; i++){
-                                    if (strcmp(playerHand[i].faceValue, "Ace") == 0 && playerHand[i].cardValue == 11){
-                                        playerHand[i].cardValue = 1;
-                                        
+                            if (p_hasAceSave) {
+                                for (int i = 0; i < playerHandSize; i++) {
+                                    if (playerHand[i].faceValue == 1 && playerHand[i].cardValue == 11) {
+                                        playerHand[i].cardValue = 1;  // Change Ace from 11 to 1
                                     }
                                 }
-                            } else if (p_hasAceSave == false){
+                            } else {
                                 playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
                                 displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                                 printf("Player busts! Dealer wins.\n");
@@ -1768,25 +1768,28 @@ int main(){
                     } else {
                         printf("Invalid choice. Please enter 'h' to Hit or 's' to Stand.\n");
                     }
-                }
-                bool d_hasAceSave = false;
+
+
+                    // Inside the dealer's logic
+                    bool d_hasAceSave = false;
                     while (dealerTotal < 17) {
                         dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
-                         for (int i = 0; i<=dealerHandSize-1; i++){
-                            if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11){
+                        for (int i = 0; i < dealerHandSize; i++) {
+                            if (dealerHand[i].faceValue == 1 && dealerHand[i].cardValue == 11) { // Same change here
                                 d_hasAceSave = true;
                             }
                         }
 
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
-                        if (d_hasAceSave == true && dealerTotal > 21){
-                             for (int i = 0; i<=dealerHandSize-1; i++){
-                                if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11){
-                                    dealerHand[i].cardValue = 1;
+                        if (d_hasAceSave && dealerTotal > 21) {
+                            for (int i = 0; i < dealerHandSize; i++) {
+                                if (dealerHand[i].faceValue == 1 && dealerHand[i].cardValue == 11) {
+                                    dealerHand[i].cardValue = 1; // Change Ace from 11 to 1
                                 }
                             }
                         }
+                    }
 
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
