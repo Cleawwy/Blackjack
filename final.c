@@ -22,14 +22,18 @@
 
 #include "gfx.h"
 
+// Define Maximum Allowed Cards Graphically
 #define MAX_CARDS 6
 
+// Struct Array
 typedef struct {
     char suit[20];
     char faceValue[10];
     int cardValue;
 } Card;
 
+
+// Phase 1 Function Definition
 int mainMenu();
 void createDeck(Card deck[52]);
 void shuffleCards(Card deck[52]);
@@ -40,17 +44,19 @@ bool hasEnoughCards(int topCardIndex);
 void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int dealerHandSize, int playerTotal, int dealerTotal);
 void saveDeckToFile(const char *filename, Card deck[52]);
 void readDeckFromFile(const char *filename, Card deck[52]);
+void clearText(char* player);
 
 
-void clear_text(char* player);
-
+// Function to Remove Files
 void removeFiles(){
     remove("NewDeck.txt");
     remove("ShuffledDeck.txt");
     exit(0);
 }
-  
-void draw_value(char* player, int value, int midpoint, int aceCalc){
+
+
+// Function to Write Total Values  
+void drawValue(char* player, int value, int midpoint, int aceCalc){
   char numStr[20];
   int yaxis;
   if (strcmp("Person", player) == 0){
@@ -67,7 +73,7 @@ void draw_value(char* player, int value, int midpoint, int aceCalc){
   if (numStr[1] == '\0'){
     midpoint+=5;
   }
-  clear_text(player);
+  clearText(player);
   usleep(10000);
   
   gfx_color(0, 0, 0);
@@ -75,12 +81,8 @@ void draw_value(char* player, int value, int midpoint, int aceCalc){
   gfx_flush();
 }
 
-
-void draw_card_outline(int x, int y, int width, int height) {
-    
-    
-
-    
+// Function to Draw Card Outline
+void drawOutline(int x, int y, int width, int height) {
     gfx_color(240, 240, 240);  
     for (int i = 1; i < width - 1; i++) {
         for (int j = 1; j < height - 1; j++) {
@@ -89,9 +91,8 @@ void draw_card_outline(int x, int y, int width, int height) {
     }
 }
 
-
-
-void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
+// Function to Draw Number/Letter on Card
+void drawPattern(int x, int y, int r, int g, int b, int value) {
     gfx_color(r, g, b);  
   
     
@@ -337,11 +338,9 @@ void draw_number_or_letter(int x, int y, int r, int g, int b, int value) {
         }
     }
 
-
-void draw_large_A(int x, int y, int r, int g, int b) {
+// Function to draw Ace
+void drawAce(int x, int y, int r, int g, int b) {
     gfx_color(r, g, b);  
-    
-    
     int a_pattern[15][9] = {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 1, 0, 0, 0, 0},
@@ -369,15 +368,12 @@ void draw_large_A(int x, int y, int r, int g, int b) {
     }
 }
 
-
-void draw_big_heart(int x, int y) {
+// Function to draw Heart
+void drawHeart(int x, int y) {
+    // Idea: 2 Circles and a pattern-like pixel precision drawing
     gfx_color(255, 0, 0);  
-
-    
     gfx_fillcircle(x - 7, y, 15);  
     gfx_fillcircle(x + 6, y, 15);  
-
-    
     for (int i = -15; i <= 15; i++) {
         for (int j = 0; j <= 20; j++) {
             if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  
@@ -387,16 +383,14 @@ void draw_big_heart(int x, int y) {
     }
 }
 
-
-void draw_club(int x, int y) {
+// Function to draw Club
+void drawClub(int x, int y) {
+    // Idea: 3 Circles, and a pattern of triangular shapes
     gfx_color(0, 0, 0);  
-
-    
     gfx_fillcircle(x - 6, y + 7, 15);  
     gfx_fillcircle(x + 6, y + 7, 15);  
     gfx_fillcircle(x, y - 4, 15);      
 
-    
     for (int i = -2; i <= 2; i++) {
         for (int j = 15; j <= 30; j++) {
             gfx_point(x + i, y + 5);
@@ -410,37 +404,33 @@ void draw_club(int x, int y) {
     }
 }
 
+// Function to draw Spade
+void drawSpade(int x, int y) {
+    // Function for pixel-drawing spade shape
+    int y_offset = 10;  
+    gfx_color(0, 0, 0);  
+    gfx_fillcircle(x - 7, y + y_offset, 15);  
+    gfx_fillcircle(x + 6, y + y_offset, 15);  
 
-void draw_spade(int x, int y) {
-     int y_offset = 10;  
+        
+    for (int i = -15; i <= 15; i++) {
+        for (int j = 0; j <= 20; j++) {
+            if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  
+                gfx_point(x + i, y - j + y_offset);  
+            }
+        }
+    }
 
-      gfx_color(0, 0, 0);  
-
-      
-      gfx_fillcircle(x - 7, y + y_offset, 15);  
-      gfx_fillcircle(x + 6, y + y_offset, 15);  
-
-      
-      for (int i = -15; i <= 15; i++) {
-          for (int j = 0; j <= 20; j++) {
-              if ((abs(i) + j <= 17) && (j >= abs(i) - 5)) {  
-                  gfx_point(x + i, y - j + y_offset);  
-              }
-          }
-      }
-    
-      for (int j = 0; j <= 25; j++) {
+    for (int j = 0; j <= 25; j++) {
         for (int i = -j / 4; i <= j / 4; i++) {
             gfx_point(x + i, y - 10 + j + y_offset);
         }
     }
 }
 
-
-void draw_diamond(int x, int y) {
-    gfx_color(255, 0, 0);  
-
-    
+// Function to draw Diamond
+void drawDiamond(int x, int y) {
+    gfx_color(255, 0, 0);
     for (int i = -10; i <= 10; i++) {
         for (int j = -15; j <= 15; j++) {  
             if (abs(i) + abs(j * 2 / 3) <= 10) {  
@@ -450,30 +440,35 @@ void draw_diamond(int x, int y) {
     }
 }
 
-
-void draw_symbol(int x, int y, char suit) {
+// Function to draw Symbols
+void drawSymbol(int x, int y, char suit) {
+    // Function calls their respected functions
     switch (suit) {
         case 'H':  
-            draw_big_heart(x, y);
+            drawHeart(x, y);
             break;
         case 'S':  
-            draw_spade(x, y);
+            drawSpade(x, y);
             break;
         case 'D':  
-            draw_diamond(x, y+5);
+            drawDiamond(x, y+5);
             break;
         case 'C':  
-            draw_club(x, y+3);
+            drawClub(x, y+3);
             break;
     }
 }
 
+// Globalize amount of cards drawn
 int draw_P=0;
 int draw_D=0;
 
-void draw_card(char *player, int card_number, int value, char suit) {
+// Function to draw cards dynamically
+void drawCard(char *player, int card_number, int value, char suit) {
     int base_x;
     int y;
+
+    // Initialize X, Y Values for Card-Drawing
     if (strcmp(player, "Dealer") == 0 && card_number == draw_D) {
         draw_D++;
         base_x = 845;
@@ -490,12 +485,14 @@ void draw_card(char *player, int card_number, int value, char suit) {
     int card_width = 100;
     int card_height = 150;
 
+
+    // Draw Card by Parts
     if (card_number >= 0 && card_number < MAX_CARDS) {
         int x = base_x + (card_number - MAX_CARDS / 2) * (card_width + 10);
         if (card_number > 0){x-=85 * card_number;}
-        draw_card_outline(x, y, card_width, card_height);
+        drawOutline(x, y, card_width, card_height); // Draw Card Outline
 
-        
+        // Main Logic to Handle Card Drawings
         int r, g, b;
         if (suit == 'H' || suit == 'D') {
             r = 255; g = 0; b = 0;
@@ -503,154 +500,83 @@ void draw_card(char *player, int card_number, int value, char suit) {
             r = 0; g = 0; b = 0;
         }
         if (value >= 2 && value < 10) {
-            draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-            draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
+            drawPattern(x + 5, y + 5, r, g, b, value);
+            drawPattern(x + card_width - 13, y + card_height - 15, r, g, b, value);
         } else if (value == 10){
-            draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-            draw_number_or_letter(x + card_width - 23+4, y + card_height - 15, r, g, b, value);
+            drawPattern(x + 5, y + 5, r, g, b, value);
+            drawPattern(x + card_width - 23+4, y + card_height - 15, r, g, b, value);
         } else if (value == 1 || value == 11) {
-            draw_large_A(x + 5, y + 3, r, g, b);
-            draw_large_A(x + card_width - 12, y + card_height - 19, r, g, b);
+            drawAce(x + 5, y + 3, r, g, b);
+            drawAce(x + card_width - 12, y + card_height - 19, r, g, b);
         } else if (value > 11){
             gfx_color(r, g, b);
             gfx_rectangle(x+10, y+20, card_width-20, card_height-40);
             
-            draw_number_or_letter(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
-            draw_number_or_letter(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
+            drawPattern(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
+            drawPattern(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
             
-            draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-            draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
+            drawPattern(x + 5, y + 5, r, g, b, value);
+            drawPattern(x + card_width - 13, y + card_height - 15, r, g, b, value);
         }
-
-        /*
-        x = x + (card_number - MAX_CARDS / 2) * (card_width + 10);
-        draw_card_outline(x, y, card_width, card_height);
         
-        r = 0; g = 0; b = 0;
-        value = 12;
-        suit = 'D';
-
-        gfx_color(r, g, b);
-        gfx_rectangle(x+10, y+20, card_width-20, card_height-40);
-        
-        draw_number_or_letter(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
-        draw_number_or_letter(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
-        
-        draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-        draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
-
-        gfx_color(0, 0, 0);
-        gfx_rectangle(x, y, card_width, card_height);
-        gfx_rectangle(x-1, y-1, card_width, card_height);
-
-        */
-
-        /*
-        x = 300;
-        y = 300;
-
-
-        x = x + (MAX_CARDS / 2) * (card_width + 10);
-        draw_card_outline(x, y, card_width, card_height);
-
-        r = 255; g = 0; b = 0;
-
-        draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-        draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
-
-        draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
-        draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
-        draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
-        
-        draw_symbol(x + card_width / 2, y + card_height / 2 - 30, suit);
-        draw_symbol(x + card_width / 2, y + card_height / 2 + 10, suit);
-        
-        draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
-        draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
-        draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
-        */
-
-        /*
-
-        int card_width = 100;
-        int card_height = 150;
-        
-        int x = 550;
-        int y = 150;
-        gfx_color(0, 0, 0);
-        gfx_rectangle(x+10, y+20, card_width-20, card_height-40);
-        
-        draw_number_or_letter(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
-        draw_number_or_letter(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
-        
-        draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-        draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
-        gfx_color(0, 0, 0);  
-        gfx_rectangle(x, y, card_width, card_height);
-        gfx_rectangle(x-1, y-1, card_width, card_height);
-        draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
-
-        gfx_flush();
-
-        */
-        
+        // Switch-Case Logic for Symbol Drawing
         switch (value){
             case 2:
-                  draw_symbol(x  + card_width / 2, (y + card_height / 2) + 20, suit);
-                  draw_symbol(x  + card_width / 2, (y + card_height / 2) - 35, suit);
+                  drawSymbol(x  + card_width / 2, (y + card_height / 2) + 20, suit);
+                  drawSymbol(x  + card_width / 2, (y + card_height / 2) - 35, suit);
             break;
             case 3:
-                  draw_symbol(x + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - 10, suit);
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 - 50, suit);
             break;
             case 4:
-                  draw_symbol(x - 18 + card_width / 2, y + card_height / 2 - 30, suit);
-                  draw_symbol(x - 18 + card_width / 2, y + card_height / 2 + 15, suit);
+                  drawSymbol(x - 18 + card_width / 2, y + card_height / 2 - 30, suit);
+                  drawSymbol(x - 18 + card_width / 2, y + card_height / 2 + 15, suit);
                   
-                  draw_symbol(x + 18 + card_width / 2, y + card_height / 2 - 30, suit);
-                  draw_symbol(x + 18 + card_width / 2, y + card_height / 2 + 15, suit);
+                  drawSymbol(x + 18 + card_width / 2, y + card_height / 2 - 30, suit);
+                  drawSymbol(x + 18 + card_width / 2, y + card_height / 2 + 15, suit);
             break;
             case 5: 
-                  draw_symbol(x - 17 + card_width / 2, y + card_height / 2 - 45, suit);
-                  draw_symbol(x + 17 + card_width / 2, y + card_height / 2 - 45, suit);
+                  drawSymbol(x - 17 + card_width / 2, y + card_height / 2 - 45, suit);
+                  drawSymbol(x + 17 + card_width / 2, y + card_height / 2 - 45, suit);
                   
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - 7, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 - 7, suit);
     
-                  draw_symbol(x - 17 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x + 17 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x - 17 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x + 17 + card_width / 2, y + card_height / 2 + 30, suit);
             break;
             case 6:
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
                   
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
             break;
             case 7:
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
                   
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - 30, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 - 30, suit);
                   
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
             break;
             case 8:
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
-                  draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
                   
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - 30, suit);
-                  draw_symbol(x + card_width / 2, y + card_height / 2 + 10, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 - 30, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 + 10, suit);
                   
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
-                  draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
+                  drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
             break;
             case 9:
                   int oldY = y;
@@ -659,21 +585,21 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   } else if (suit == 'H'){
                      y += 7;
                   }
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + 5, suit);
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + 40, suit);
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - 30, suit);
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - 65, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 + 5, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 + 40, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 - 30, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 - 65, suit);
                   
                   if (suit == 'H'){
-                    draw_symbol(x + card_width / 2, y + card_height / 2 - 13, suit);
+                    drawSymbol(x + card_width / 2, y + card_height / 2 - 13, suit);
                   } else {
-                    draw_symbol(x + card_width / 2, y + card_height / 2 - 10, suit);
+                    drawSymbol(x + card_width / 2, y + card_height / 2 - 10, suit);
                   }
                   
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + 5, suit);
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + 40, suit);
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - 30, suit);
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - 65, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 + 5, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 + 40, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 - 30, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 - 65, suit);
                   
                   y = oldY;
             break;
@@ -701,15 +627,15 @@ void draw_card(char *player, int card_number, int value, char suit) {
                   } else if (suit == 'D'){
                       y += 8;
                   }
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + Y1, suit);
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 + Y2, suit);
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - Y3, suit);
-                  draw_symbol(x - 22 + card_width / 2, y + card_height / 2 - Y4, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 + Y1, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 + Y2, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 - Y3, suit);
+                  drawSymbol(x - 22 + card_width / 2, y + card_height / 2 - Y4, suit);
                   
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + Y1, suit);
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 + Y2, suit);
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - Y3, suit);
-                  draw_symbol(x + 22 + card_width / 2, y + card_height / 2 - Y4, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 + Y1, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 + Y2, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 - Y3, suit);
+                  drawSymbol(x + 22 + card_width / 2, y + card_height / 2 - Y4, suit);
                   
                   Y1 = 45;
                   Y2 = 25;
@@ -723,12 +649,12 @@ void draw_card(char *player, int card_number, int value, char suit) {
                       y -= 3;
                   }
                   
-                  draw_symbol(x + card_width / 2, y + card_height / 2 - Y1, suit);
-                  draw_symbol(x + card_width / 2, y + card_height / 2 + Y2, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 - Y1, suit);
+                  drawSymbol(x + card_width / 2, y + card_height / 2 + Y2, suit);
                   y = oldY;
             break;
             default:
-                 draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
+                 drawSymbol(x + card_width / 2, y + card_height / 2 - 5, suit);
             break;
         }
       gfx_color(0, 0, 0);  
@@ -738,12 +664,11 @@ void draw_card(char *player, int card_number, int value, char suit) {
     gfx_flush();
 }
 
-void clear_text(char* player){
+// Function to Clear Value Drawn
+void clearText(char* player){
+  // Draws Colored Rectangle Over Value
   gfx_color(25,70,25);
-
   int i, j, x, y;
-    
-    
   if (strcmp("Person", player) == 0){
       x = 610;
       y = 640;
@@ -755,13 +680,12 @@ void clear_text(char* player){
       for (int j = y; j>=y-40; j--){
           gfx_point(i, j);
       }
-}
+   }
   gfx_flush();
 }
 
-
-void draw_button(int x, int y, char *text) {
-    
+// Function to Handle Button Drawing
+void drawButton(int x, int y, char *text) {
     gfx_color(25, 80, 25);
     gfx_fillcircle(x, y, 100);
 
@@ -780,16 +704,18 @@ void draw_button(int x, int y, char *text) {
     gfx_flush();
 }
 
+// Function to Create New Deck
 void createDeck(Card deck[52]) {
+    /* Initialize Arrays of Information */
     char* suits[4] = {"Heart", "Diamond", "Spade", "Club"};
     char* faceValues[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
     int cardValues[13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 0};
 
+    // Create an Index out of For-Loop Scope
     int index = 0;
-
-    
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 13; j++) {
+            // Create New Cards and Populate the Deck
             strncpy(deck[index].suit, suits[i], sizeof(deck[index].suit) - 1);
             deck[index].suit[sizeof(deck[index].suit) - 1] = '\0';
             strncpy(deck[index].faceValue, faceValues[j], sizeof(deck[index].faceValue) - 1);
@@ -799,43 +725,42 @@ void createDeck(Card deck[52]) {
         }
     }
 
-    
+    // Call Save Deck
     saveDeckToFile("NewDeck.txt", deck);
 }
 
 void shuffleCards(Card deck[52]) {
-    srand(time(NULL)); 
-    
-    
-    
+    srand(time(NULL)); // Randomize the Seed
     for (int i = 51; i > 0; i--) {
+        // Shuffle Cards with Fisher-Yates Algorithm
         int j = rand() % (i + 1);
         Card temp = deck[i];
         deck[i] = deck[j];
         deck[j] = temp;
     }
-
-    
     saveDeckToFile("ShuffledDeck.txt", deck);
 }
 
 void dealCards(Card deck[52], int *topCardIndex, Card hand[], int *handSize) {
-    
+    // Deal Cards from Top of Deck
     if (*topCardIndex < 52) {
         hand[*handSize] = deck[*topCardIndex];
         (*handSize)++;
         (*topCardIndex)++;
         printf("Dealt card: %s of %s\n", hand[*handSize - 1].faceValue, hand[*handSize - 1].suit);
         printf("Cards left in deck: %d\n", 52 - *topCardIndex);
-    } else {
+    } else { // Logic for Handling No More Cards
         printf("No more cards in the deck!\n");
     }
 }
 
+// Function to Handle Aces
 int handleAces(int totalValue, Card hand[], int handSize, bool isHuman) {
+   // Main Ace Handler
    for (int i = 0; i < handSize; i++) {
         if (strcmp(hand[i].faceValue, "Ace") == 0){
             if (hand[i].cardValue == 0) {
+                // Assigning Ace Value based on Total
                 if (totalValue + 11 <= 21){
                     hand[i].cardValue = 11;    
                 } else {
@@ -848,35 +773,34 @@ int handleAces(int totalValue, Card hand[], int handSize, bool isHuman) {
     return totalValue;
 }
 
-
+// Function to Calculate Total Value
 int calculateTotalValue(Card hand[], int handSize, bool isHuman) {
     int totalValue = 0;
 
+    /* Handles Cards Except Ace Value */
     for (int i = 0; i < handSize; i++) {
         if (strcmp(hand[i].faceValue, "Ace") != 0) {
             totalValue += hand[i].cardValue;
         }
     }
 
-    totalValue = handleAces(totalValue, hand, handSize, isHuman);
+    totalValue = handleAces(totalValue, hand, handSize, isHuman); // Handles Ace Value
 
     return totalValue;
 }
 
 
-
+/* Boolean Function to Check if New Game has enough cards */
 bool hasEnoughCards(int topCardIndex) {
     return (52 - topCardIndex) >= 10;
 }
 
-
+// Function to Display Hands
 void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int dealerHandSize, int playerTotal, int dealerTotal) {
-    
-    
     bool playerDuality = false;
     bool dealerDuality = false;
 
-    int maxHandSize = (playerHandSize > dealerHandSize) ? playerHandSize : dealerHandSize;
+    int maxHandSize = (playerHandSize > dealerHandSize) ? playerHandSize : dealerHandSize; // Max Hand Size for Output
 
     printf("\nPlayers's Hand:         \t\tDealer's Hand      ");
     printf("\n---------------         \t\t-------------     ");
@@ -884,7 +808,6 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     int pIter = 0;
     int dIter = 0;
     for (int i = 0; i < maxHandSize; i++) {
-        
         if (i < playerHandSize) {
               printf("%i: %s of %s", i + 1, playerHand[i].faceValue, playerHand[i].suit);
               int drawnValue = playerHand[i].cardValue;
@@ -896,7 +819,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
                   drawnValue = 14;
               }
               gfx_flush();
-              draw_card("Person", pIter, drawnValue, playerHand[i].suit[0]);
+              drawCard("Person", pIter, drawnValue, playerHand[i].suit[0]);
               
               pIter++;
             
@@ -921,7 +844,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
                 drawnValue = 14;
             }
             usleep(100000);
-            draw_card("Dealer", dIter, drawnValue, dealerHand[i].suit[0]);
+            drawCard("Dealer", dIter, drawnValue, dealerHand[i].suit[0]);
             dIter++;
             if (strcmp(dealerHand[i].faceValue, "Ace") == 0 && dealerHand[i].cardValue == 11) {
                 dealerDuality = true;
@@ -937,10 +860,10 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         if (playerTotal/10 == 2){
             valX -= 4; 
         }
-        draw_value("Person", playerTotal, valX, 1);
+        drawValue("Person", playerTotal, valX, 1);
     } else {
         printf("Total: %d", playerTotal);
-        draw_value("Person", playerTotal, ((1280/2)+(1280/2))/2, 0);
+        drawValue("Person", playerTotal, ((1280/2)+(1280/2))/2, 0);
     }
 
     if (dealerDuality == true){
@@ -948,10 +871,10 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
         if (dealerTotal/10 == 2){
             valX -= 4;
         }
-        draw_value("Dealer", dealerTotal, valX, 1);
+        drawValue("Dealer", dealerTotal, valX, 1);
         printf("\t\t\t\tTotal: %d or %d", dealerTotal-10, dealerTotal);
     } else {
-        draw_value("Dealer", dealerTotal, ((1280/2)+(1280/2))/2, 0);
+        drawValue("Dealer", dealerTotal, ((1280/2)+(1280/2))/2, 0);
         printf("\t\t\t\tTotal: %d", dealerTotal);
     }
 
@@ -962,7 +885,7 @@ void displayHands(Card playerHand[], int playerHandSize, Card dealerHand[], int 
     printf("\n");
 }
 
-
+// Function to Save Deck in File *filename
 void saveDeckToFile(const char *filename, Card deck[52]) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -978,7 +901,7 @@ void saveDeckToFile(const char *filename, Card deck[52]) {
 }
 
 
-
+// Function to Read Deck from File *filename
 void readDeckFromFile(const char *filename, Card deck[52]) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -993,12 +916,12 @@ void readDeckFromFile(const char *filename, Card deck[52]) {
     fclose(file);
 }
 
-
+// Function to Check Blackjack
 bool checkBlackjack(int total) {
     return total == 21;
 }
 
-
+// Function to Determine Winner
 int determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool dealerBlackjack) {
     gfx_color(53, 101, 77);
     gfx_fillrectangle((1280/2)-300, (830/2)-250, 600, 125);
@@ -1048,7 +971,7 @@ int determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool
 }
 
 
-
+// Function to Create Graphical Help Screen
 int createHelpScreen(int x, int y){
     int oldx, oldy;
     oldx = x; oldy = y;
@@ -1097,17 +1020,17 @@ int createHelpScreen(int x, int y){
     char suit = 'S';
 
     x = x + (MAX_CARDS / 2) * (card_width + 10);
-    draw_card_outline(x, y, card_width, card_height);
+    drawOutline(x, y, card_width, card_height);
 
     int r, g, b;
     r = 0; g = 0; b = 0;
 
-    draw_large_A(x + 5, y + 3, r, g, b);
-    draw_large_A(x + card_width - 12, y + card_height - 19, r, g, b);
+    drawAce(x + 5, y + 3, r, g, b);
+    drawAce(x + card_width - 12, y + card_height - 19, r, g, b);
     gfx_color(0, 0, 0);
     gfx_rectangle(x, y, card_width, card_height);
     gfx_rectangle(x-1, y-1, card_width, card_height);
-    draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
+    drawSymbol(x + card_width / 2, y + card_height / 2 - 5, suit);
 
     x = -150;
     y = 375;
@@ -1116,33 +1039,33 @@ int createHelpScreen(int x, int y){
 
     
     x = x + (MAX_CARDS / 2) * (card_width + 10);
-    draw_card_outline(x, y, card_width, card_height);
+    drawOutline(x, y, card_width, card_height);
 
     r = 255; g = 0; b = 0;
 
-    draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-    draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
+    drawPattern(x + 5, y + 5, r, g, b, value);
+    drawPattern(x + card_width - 13, y + card_height - 15, r, g, b, value);
 
     gfx_color(0, 0, 0);
     gfx_rectangle(x, y, card_width, card_height);
     gfx_rectangle(x-1, y-1, card_width, card_height);
 
-    draw_symbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
-    draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
-    draw_symbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
+    drawSymbol(x - 20 + card_width / 2, y + card_height / 2 + 30, suit);
+    drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 50, suit);
+    drawSymbol(x - 20 + card_width / 2, y + card_height / 2 - 10, suit);
     
-    draw_symbol(x + card_width / 2, y + card_height / 2 - 30, suit);
-    draw_symbol(x + card_width / 2, y + card_height / 2 + 10, suit);
+    drawSymbol(x + card_width / 2, y + card_height / 2 - 30, suit);
+    drawSymbol(x + card_width / 2, y + card_height / 2 + 10, suit);
     
-    draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
-    draw_symbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
-    draw_symbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
+    drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 10, suit);
+    drawSymbol(x + 20 + card_width / 2, y + card_height / 2 + 30, suit);
+    drawSymbol(x + 20 + card_width / 2, y + card_height / 2 - 50, suit);
 
     x = -150;
     y = 575;
 
     x = x + (MAX_CARDS / 2) * (card_width + 10);
-    draw_card_outline(x, y, card_width, card_height);
+    drawOutline(x, y, card_width, card_height);
     
     r = 255; g = 0; b = 0;
     value = 14;
@@ -1151,12 +1074,12 @@ int createHelpScreen(int x, int y){
     gfx_color(r, g, b);
     gfx_rectangle(x+10, y+20, card_width-20, card_height-40);
     
-    draw_number_or_letter(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
-    draw_number_or_letter(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
+    drawPattern(x + 5 + 10, y + card_height - 15 - 20, r, g, b, value);
+    drawPattern(x + card_width - 13 - 10, y + 5 + 20, r, g, b, value);
     
-    draw_number_or_letter(x + 5, y + 5, r, g, b, value);
-    draw_number_or_letter(x + card_width - 13, y + card_height - 15, r, g, b, value);
-    draw_symbol(x + card_width / 2, y + card_height / 2 - 5, suit);
+    drawPattern(x + 5, y + 5, r, g, b, value);
+    drawPattern(x + card_width - 13, y + card_height - 15, r, g, b, value);
+    drawSymbol(x + card_width / 2, y + card_height / 2 - 5, suit);
 
     gfx_color(0, 0, 0);
     gfx_rectangle(x, y, card_width, card_height);
@@ -1184,9 +1107,8 @@ int createHelpScreen(int x, int y){
     }
 }
 
-
+// Function to Create Credits Screen
 int createCreditsScreen(int x, int y){
-
     gfx_clear_color(53, 101, 77);
     gfx_clear();
 
@@ -1228,7 +1150,7 @@ int createCreditsScreen(int x, int y){
 }
 
 
-
+// Interpolation & Bezier Functions to draw text borders in the middle
 typedef struct {
     int x, y;
 } Point;
@@ -1255,11 +1177,9 @@ void drawCurve(Point start, Point control, Point end, int steps) {
     }
 }
 
+// Function to Write Letters on Screen
 void characterDesign(char value){
     gfx_color(0, 0, 0);
-    
-    
-
     switch (value){
         case 'X':
             
@@ -1433,7 +1353,7 @@ void characterDesign(char value){
 
 }
 
-
+// Function to Create Graphical Menu
 int createMenu(int x, int y){
     while (1){
         int scaleX = 200;
@@ -1504,7 +1424,7 @@ int createMenu(int x, int y){
     }
 }
 
-
+// Main Function
 int main(){
 
     signal(SIGINT, removeFiles);  
@@ -1512,9 +1432,9 @@ int main(){
     int screenX = 1280;
     int screenY = 830;
 
-    gfx_open(screenX, screenY, "A Blackjack Experience");
+    gfx_open(screenX, screenY, "A Blackjack Experience"); // Open Graphics Window
 
-    while (1){
+    while (1){ // Start Main Loop
 
     int playerScore = 0;
     int dealerScore = 0;
@@ -1523,44 +1443,42 @@ int main(){
     gfx_clear();
     
     
-    int ret = createMenu(screenX, screenY);
-    if (ret != 1) {return 1;}
-
+    int ret = createMenu(screenX, screenY); // Create Menu
+    if (ret != 1) {return 1;} // Check if Game has been Started
         Card deck[52];
         int topCardIndex = 0;
 
-        
         createDeck(deck);
         shuffleCards(deck);
 
-        
         readDeckFromFile("NewDeck.txt", deck);
         readDeckFromFile("ShuffledDeck.txt", deck);
 
-        
         while (1) {
-            draw_P = 0;
+            draw_P = 0; // Re-assign Global Value to 0
             draw_D = 0;
 
-            gfx_clear_color(128, 128, 128);
-            gfx_clear();
+            gfx_clear_color(128, 128, 128); // Set Clear Color
+            gfx_clear(); // Clear Board
             gfx_flush();
 
-            
+            // Draw Pattern-Like Background
             for (int x = 0; x < screenX; x++) {
                 for (int y = 0; y < screenY; y++) {
                     if (((x / 20) % 2 == 0 && (y / 20) % 2 == 0) || ((x / 20) % 2 == 1 && (y / 20) % 2 == 1)) {
-                        gfx_color(20, 85, 20);  
+                        //gfx_color(20, 85, 20);  
+                        gfx_color(95, 100, 110);
                     } else {
-                        gfx_color(30, 100, 30);  
+                        //gfx_color(30, 100, 30); 
+                        gfx_color(60, 65, 70);
                     }
                     gfx_point(x, y);
                 }
             }
 
-            gfx_flush();
+            gfx_flush(); // Flush to Force-Load before Continuation.
 
-            
+            // Create the Table and Borders
             int center_x = 650;
             int center_y = 375;
             int radius_x = 500;
@@ -1705,8 +1623,8 @@ int main(){
             gfx_flush();
 
             
-            draw_button((screenX/2)-110, 600, "Stand");
-            draw_button((screenX/2)+110, 600, "Hit");
+            drawButton((screenX/2)-110, 600, "Stand");
+            drawButton((screenX/2)+110, 600, "Hit");
             
             
             int x_between = ((screenX/2)+(screenX/2))/2;
@@ -1716,7 +1634,8 @@ int main(){
             gfx_text("Total:", x_between-33, 20, 2);
             gfx_line(x_between-33, 45, x_between+37, 45);
         
-            
+        
+            // Start Main Game Logic
 
             if (!hasEnoughCards(topCardIndex)) {
                 printf("Not enough cards in the deck. Creating and shuffling a new deck.\n");
@@ -1726,7 +1645,7 @@ int main(){
             }
 
 
-            
+            // Initialize Arrays
             Card playerHand[52];
             Card dealerHand[52];
             int playerHandSize = 0;
@@ -1736,21 +1655,20 @@ int main(){
             gfx_rectangle(510, 375, 110, 160);
             gfx_rectangle(510, 115, 110, 160);
 
-            
+            // Deal Cards from Top of Deck to Player and Dealer
             dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
             dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
             dealCards(deck, &topCardIndex, playerHand, &playerHandSize);
             dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
-            
+            // Calculate Totals
             int playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
             int dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
 
-            
+            // Display Hands Graphically
             displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
             
-
-            
+            // Check for Blackjack Initially
             bool playerBlackjack = checkBlackjack(playerTotal);
             bool dealerBlackjack = checkBlackjack(dealerTotal);
             char choice;
@@ -1763,6 +1681,7 @@ int main(){
                     dealerScore += 1;
                 }
             } else {
+                // Start Game Functionality Hit/Stand
                 while (1) {
                     gfx_text("Turn: Player (YOU)", 250, 20, 2);
                     printf("\nDo you want to Hit or Stand? (h/s): ");
@@ -1833,8 +1752,6 @@ int main(){
                     }
                 }
                 bool d_hasAceSave = false;
-
-                    
                     while (dealerTotal < 17) {
                         dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
@@ -1933,6 +1850,7 @@ int main(){
     return 0;
 }
 
+// Phase 1 Main Menu Handler
 int mainMenu() { 
     char currentCommand[10];
     char exitProcess[10];
