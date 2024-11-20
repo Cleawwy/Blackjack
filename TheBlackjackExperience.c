@@ -10,7 +10,7 @@
  *
  */
 
-
+// Libraries & Headers
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -25,26 +25,33 @@
 // Define Maximum Allowed Cards Graphically
 #define MAX_CARDS 6
 
-// // Struct Array
-// typedef struct {
-//     char suit[20];
-//     char faceValue[10];
-//     int cardValue;
-// } Card;
-
-
 // Phase 1 Function Definition
+bool hasEnoughCards(int topCardIndex);
 int mainMenu();
+int calculateTotalValue(int hand[10][3], int handSize, bool isHuman);
+int handleAces(int totalValue, int hand[10][3], int handSize, bool isHuman);
 void createDeck(int deck[52][3]);
 void shuffleCards(int deck[52][3]);
 void dealCards(int deck[52][3], int *topCardIndex, int hand[10][3], int *handSize);
-int calculateTotalValue(int hand[10][3], int handSize, bool isHuman);
-int handleAces(int totalValue, int hand[10][3], int handSize, bool isHuman);
-bool hasEnoughCards(int topCardIndex);
 void displayHands(int playerHand[10][3], int playerHandSize, int dealerHand[10][3], int dealerHandSize, int playerTotal, int dealerTotal);
 void saveDeckToFile(const char *filename, int deck[52][3]);
 void readDeckFromFile(const char *filename, int deck[52][3]);
+
+// Phase 2 Function Definition
+void drawValue(char* player, int value, int midpoint, int aceCalc);
+void drawOutline(int x, int y, int width, int height);
+void drawPattern(int x, int y, int r, int g, int b, int value);
+void drawAce(int x, int y, int r, int g, int b);
+void drawHeart(int x, int y);
+void drawClub(int x, int y);
+void drawSpade(int x, int y);
+void drawDiamond(int x, int y);
+void drawSymbol(int x, int y, char suit);
+void drawCard(char *player, int card_number, int value, char suit);
+void drawButton(int x, int y, char *text);
 void clearText(char* player, char Usage);
+void removeFiles();
+
 char* getName(char* Type, int APoint){
     char* suits[4] = {"Heart", "Diamond", "Spade", "Club"};
     char* faceValues[14] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
@@ -55,16 +62,12 @@ char* getName(char* Type, int APoint){
     }
 }
 
-
-
-
 // Function to Remove Files
 void removeFiles(){
     remove("NewDeck.txt");
     remove("ShuffledDeck.txt");
     exit(0);
 }
-
 
 // Function to Write Total Values  
 void drawValue(char* player, int value, int midpoint, int aceCalc){
@@ -107,10 +110,8 @@ void drawOutline(int x, int y, int width, int height) {
 // Function to Draw Number/Letter on Card
 void drawPattern(int x, int y, int r, int g, int b, int value) {
     gfx_color(r, g, b);  
-  
     
     int patterns[14][15][9] = {
-        
         {{0, 0, 0, 1, 1, 1, 0, 0, 0},
          {0, 0, 1, 0, 0, 0, 1, 0, 0},
          {0, 1, 0, 0, 0, 0, 0, 1, 0},
@@ -332,7 +333,6 @@ void drawPattern(int x, int y, int r, int g, int b, int value) {
                 }
             }
         } else if (value == 10) {
-            
             for (int i = 0; i < 15; i++) {
                 for (int j = 0; j < 9; j++) {
                     if (patterns[1][i][j] == 1) {
@@ -748,12 +748,10 @@ void drawButton(int x, int y, char *text) {
     gfx_fillcircle(x, y+7, 120);
     gfx_color(25, 80, 25);
     gfx_fillcircle(x, y, 105);
-
     gfx_color(0, 0, 0);
     gfx_circle(x, y, 105);
     gfx_circle(x, y+7, 120);
 
-    
     if (strcmp(text, "Hit") == 0){
         x -=15;
     } else {
@@ -852,7 +850,6 @@ int calculateTotalValue(int hand[10][3], int handSize, bool isHuman) {
     return handleAces(totalValue, hand, handSize, isHuman);
 }
 
-
 /* Boolean Function to Check if New Game has enough cards */
 bool hasEnoughCards(int topCardIndex) {
     return (52 - topCardIndex) >= 10;
@@ -905,10 +902,7 @@ void displayHands(int playerHand[10][3], int playerHandSize, int dealerHand[10][
 
         // Dealer's Hand
         if (i < dealerHandSize) {
-            printf("%i: %s of %s", i + 1, 
-                   getName("Face", dealerHand[i][1]), 
-                   getName("Suit", dealerHand[i][0]));
-            
+            printf("%i: %s of %s", i + 1, getName("Face", dealerHand[i][1]), getName("Suit", dealerHand[i][0]));
             int drawnValue = dealerHand[i][2];
             if (dealerHand[i][1] == 11) { // Jack
                 drawnValue = 12;
@@ -984,7 +978,6 @@ void displayHands(int playerHand[10][3], int playerHandSize, int dealerHand[10][
     printf("\n");
 }
 
-
 void saveDeckToFile(const char *filename, int deck[52][3]) {
     FILE *file = fopen(filename, "w");
     if (!file) {
@@ -1012,7 +1005,6 @@ void readDeckFromFile(const char *filename, int deck[52][3]) {
 
     fclose(file);
 }
-
 
 // Function to Check Blackjack
 bool checkBlackjack(int total) {
@@ -1067,7 +1059,6 @@ int determineWinner(int playerTotal, int dealerTotal, bool playerBlackjack, bool
     gfx_flush();
     return 3;
 }
-
 
 // Function to Create Graphical Help Screen
 int createHelpScreen(int x, int y){
@@ -1247,7 +1238,6 @@ int createCreditsScreen(int x, int y){
     }
 }
 
-
 // Interpolation & Bezier Functions to draw text borders in the middle
 typedef struct {
     int x, y;
@@ -1267,17 +1257,14 @@ Point bezier(Point p0, Point p1, Point p2, float t) {
     return p;
 }
 void drawCurve(Point start, Point control, Point end, int steps) {
-    // Store the first point
     Point prev = start;
     
     for (int i = 1; i <= steps; i++) {
         float t = (float)i / steps; 
         Point p = bezier(start, control, end, t); 
         
-        // Draw a line from the previous point to the current point
         gfx_line(prev.x, prev.y, p.x, p.y);
         
-        // Update the previous point for the next iteration
         prev = p;
     }
 }
@@ -1287,7 +1274,6 @@ void characterDesign(char value){
     gfx_color(0, 0, 0);
     switch (value){
         case 'X':
-            
             gfx_line((1280/2)-300+20, 275, (1280/2)-350+20, 250);
             gfx_line((1280/2)+300, 275, (1280/2)+350, 250);
 
@@ -1529,12 +1515,10 @@ int createMenu(int x, int y){
     }
 }
 
-
-
 // Main Function
 int main(){
-
-    signal(SIGINT, removeFiles);  
+    signal(SIGINT, removeFiles); // Uses Signal from Signal.h to track SIGINT (When program is terminated on purpose)
+    signal(SIGTERM, removeFiles); // Uses Signal from Signal.h to track SIGTERM (When program is terminated accidentally)
 
     int screenX = 1280;
     int screenY = 830;
@@ -1569,38 +1553,31 @@ int main(){
             gfx_clear(); // Clear Board
             gfx_flush();
 
-        // // Draw Pattern-Like Background
-        // for (int x = 0; x < screenX; x++) {
-        //     for (int y = 0; y < screenY; y++) {
-        //         if (((x / 20) % 2 == 0 && (y / 20) % 2 == 0) || ((x / 20) % 2 == 1 && (y / 20) % 2 == 1)) {
-        //             //gfx_color(20, 85, 20);  
-        //             gfx_color(95, 100, 110);
-        //         } else {
-        //             //gfx_color(30, 100, 30); 
-        //             gfx_color(60, 65, 70);
-        //         }
-        //         gfx_point(x, y);
-        //     }
-        // }
+            // // Draw Pattern-Like Background
+            // for (int x = 0; x < screenX; x++) {
+            //     for (int y = 0; y < screenY; y++) {
+            //         if (((x / 20) % 2 == 0 && (y / 20) % 2 == 0) || ((x / 20) % 2 == 1 && (y / 20) % 2 == 1)) {
+            //             //gfx_color(20, 85, 20);  
+            //             gfx_color(95, 100, 110);
+            //         } else {
+            //             //gfx_color(30, 100, 30); 
+            //             gfx_color(60, 65, 70);
+            //         }
+            //         gfx_point(x, y);
+            //     }
+            // }
 
-        // Refined Casino Floor Pattern (Dark Tones with Accents)
-        for (int x = 0; x < screenX; x++) {
-            for (int y = 0; y < screenY; y++) {
-                // Checkerboard or alternating stripes pattern with deep colors
-                if (((x / 30) % 2 == 0 && (y / 30) % 2 == 0) || ((x / 30) % 2 == 1 && (y / 30) % 2 == 1)) {
-                    // Dark charcoal or navy background (Neutral)
-                    gfx_color(40, 40, 40);  // Charcoal or dark gray
-                } else {
-                    // Slightly lighter accent (Subtle contrast)
-                    gfx_color(70, 70, 70);  // Dark gray with slight contrast
+            // Casino Floor Pattern (Dark Toned)
+            for (int x = 0; x < screenX; x++) {
+                for (int y = 0; y < screenY; y++) {
+                    if (((x / 30) % 2 == 0 && (y / 30) % 2 == 0) || ((x / 30) % 2 == 1 && (y / 30) % 2 == 1)) {
+                        gfx_color(40, 40, 40);  // Charcoal
+                    } else {
+                        gfx_color(70, 70, 70);  // Dark gray 
+                    }
+                    gfx_point(x, y);
                 }
-                gfx_point(x, y);
             }
-        }
-
-
-
-
 
             gfx_flush(); // Flush to Force-Load before Continuation.
 
@@ -1609,9 +1586,9 @@ int main(){
             int center_y = 375;
             int radius_x = 500;
             int radius_y = 350;
-
             int border_thickness = 30;
             int i = 29;
+
             gfx_color(0,0,0);
             //printf("%i\n", i);
 
@@ -1637,14 +1614,6 @@ int main(){
 
             radius_x = 500;
             radius_y = 350;
-
-            //             gfx_color(81, 51, 17);
-
-            //             for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
-            //                 for (int y = center_y; y <= center_y + (radius_y + i) * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)((radius_x + i) * (radius_x + i))); y++) {
-            //                     gfx_point(x, y);
-            //                 }
-            //             }
                         
             // gfx_flush();
 
@@ -1683,66 +1652,54 @@ int main(){
             radius_x = 500;
             radius_y = 350;
 
-            // gfx_color(25,70,25);
-            // for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-            //     for (int y = center_y; y <= center_y + radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x)); y++) {
-            //         gfx_point(x, y);
-            //     }
-            // }
+            // Noisy Drawing for Blackjack Green Fabric Texture
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
 
-            // for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-            //     for (int y = 0; y <= center_y; y++) {
-            //         gfx_point(x, y);
-            //     }
-            // }
-            // Precompute the range of y values for each x to avoid calling sqrt() repeatedly
-for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-    // Precompute the max y value for this x
-    double max_y = radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x));
+                double max_y = radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x));
 
-    for (int y = center_y; y <= center_y + (int)max_y; y++) {
-        // Adding slight variations to create a fabric texture effect
-        int noise = (rand() % 10) - 5;  // Random variation between -5 and 5
-        int r = 25 + noise;             // Red component (static)
-        int g = 70 + noise;             // Green component (static, with noise)
-        int b = 25 + noise;             // Blue component (static)
+                for (int y = center_y; y <= center_y + (int)max_y; y++) {
 
-        // Prevent color values from going negative
-        if (r < 0) r = 0;
-        if (g < 0) g = 0;
-        if (b < 0) b = 0;
+                    int noise = (rand() % 10) - 5;
+                    int r = 25 + noise;            
+                    int g = 70 + noise;           
+                    int b = 25 + noise;          
 
-        // Set the color with slight variation to simulate fabric texture
-        gfx_color(r, g, b);
-        gfx_point(x, y);  // Draw the point
-    }
-}
+                
+                    if (r < 0) r = 0;
+                    if (g < 0) g = 0;
+                    if (b < 0) b = 0;
 
-radius_x-=1;
-// For the bottom part of the table, avoid recalculating sqrt for each pixel
-for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-    // Precompute the max y value for this x
-    double max_y = radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x));
+            
+                    gfx_color(r, g, b);
+                    gfx_point(x, y); 
+                }
+            }
 
-    for (int y = 0; y <= center_y; y++) {
-        // Adding noise to create a fabric texture for the bottom part as well
-        int noise = (rand() % 10) - 5;  // Random variation between -5 and 5
-        int r = 25 + noise;             // Red component (static)
-        int g = 70 + noise;             // Green component (static, with noise)
-        int b = 25 + noise;             // Blue component (static)
+            radius_x-=1;
+            // For the bottom part of the table, avoid recalculating sqrt for each pixel
+            for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
+                // Precompute the max y value for this x
+                double max_y = radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x));
 
-        // Prevent color values from going negative
-        if (r < 0) r = 0;
-        if (g < 0) g = 0;
-        if (b < 0) b = 0;
+                for (int y = 0; y <= center_y; y++) {
+                    // Adding noise to create a fabric texture for the bottom part as well
+                    int noise = (rand() % 10) - 5;  // Random variation between -5 and 5
+                    int r = 25 + noise;             // Red component (static)
+                    int g = 70 + noise;             // Green component (static, with noise)
+                    int b = 25 + noise;             // Blue component (static)
 
-        // Set the color with slight variation to simulate fabric texture
-        gfx_color(r, g, b);
-        gfx_point(x, y);  // Draw the point
-    }
-}
+                    // Prevent color values from going negative
+                    if (r < 0) r = 0;
+                    if (g < 0) g = 0;
+                    if (b < 0) b = 0;
 
+                    // Set the color with slight variation to simulate fabric texture
+                    gfx_color(r, g, b);
+                    gfx_point(x, y);  // Draw the point
+                }
+            }
 
+            // Drawing Attempt at Golden Parabola
             gfx_color(255, 255, 0); 
 
             int num_dots_curve = 75; 
@@ -1790,6 +1747,7 @@ for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
 
             gfx_flush();
 
+            // Singular Character Design for Middle Text
             characterDesign('X');
             characterDesign('I');
             characterDesign('N'); 
@@ -1809,7 +1767,7 @@ for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
             gfx_text(DisplayedScore, 800, 20, 2);
             gfx_flush();
 
-            
+            // Button Drawing
             drawButton((screenX/2)-110, 600, "Stand");
             drawButton((screenX/2)+110, 600, "Hit");
             
@@ -1823,7 +1781,6 @@ for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
         
         
             // Start Main Game Logic
-
             if (!hasEnoughCards(topCardIndex)) {
                 printf("Not enough cards in the deck. Creating and shuffling a new deck.\n");
                 createDeck(deck);
@@ -1934,7 +1891,6 @@ for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
                         oldDealerTotal = dealerTotal;
                     } else if (choice == 's' || choice == 'S') {
                         gfx_color(25, 70, 25);
-                        //gfx_fillrectangle(250, 20, 300, 30);
                         clearText("Person", 'H');
                         gfx_flush();
                         gfx_color(0, 0, 0);
@@ -1971,14 +1927,7 @@ for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
                         oldPlayerTotal = playerTotal;
                         oldDealerTotal = dealerTotal;
                     }
-
-                    dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
-                    displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
-                    oldPlayerTotal = playerTotal;
-                    oldDealerTotal = dealerTotal;
-
                     
-                    //displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                     gfx_flush();
                     
                     int Winner = determineWinner(playerTotal, dealerTotal, playerBlackjack, dealerBlackjack);
@@ -2027,6 +1976,8 @@ for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
                     printf("Please enter a valid character (y/n): ");
                 }
             }*/
+
+            // Exit Handler
             int exitGame = 0;
             while(1){
                 int c = gfx_wait();
@@ -2076,7 +2027,6 @@ int mainMenu() {
             printf("You can choose to hit as many times as you want, but the dealer hits until he reaches atleast 17.\n");
             printf("You can stand your chosen cards.\n");
             fgets(exitProcess, sizeof(exitProcess), stdin);
-            
             if (exitProcess[0] == '\n') {
                 continue;
             }
