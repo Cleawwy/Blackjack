@@ -1864,7 +1864,7 @@ int main(){
                         
                         bool p_hasAceSave = false;
                         for (int i = 0; i < playerHandSize; i++) {
-                            if (playerHand[i][1] == 1 && playerHand[i][2] == 11) { // Assuming 1 is used for Ace in the array
+                            if (playerHand[i][1] == 14 && playerHand[i][2] == 11) { // Assuming 1 is used for Ace in the array
                                 p_hasAceSave = true;
                             }
                         }
@@ -1872,7 +1872,7 @@ int main(){
                         if (playerTotal > 21) {
                             if (p_hasAceSave) {
                                 for (int i = 0; i < playerHandSize; i++) {
-                                    if (playerHand[i][1] == 1 && playerHand[i][2] == 11) {
+                                    if (playerHand[i][1] == 14 && playerHand[i][2] == 11) {
                                         playerHand[i][2] = 1;  // Change Ace from 11 to 1
                                     }
                                 }
@@ -1909,7 +1909,7 @@ int main(){
                         dealCards(deck, &topCardIndex, dealerHand, &dealerHandSize);
 
                         for (int i = 0; i < dealerHandSize; i++) {
-                            if (dealerHand[i][1] == 1 && dealerHand[i][2] == 11) { // Same change here
+                            if (dealerHand[i][1] == 14 && dealerHand[i][2] == 11) { // Same change here
                                 d_hasAceSave = true;
                             }
                         }
@@ -1917,7 +1917,7 @@ int main(){
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         if (d_hasAceSave && dealerTotal > 21) {
                             for (int i = 0; i < dealerHandSize; i++) {
-                                if (dealerHand[i][1] == 1 && dealerHand[i][1] == 11) {
+                                if (dealerHand[i][1] == 14 && dealerHand[i][1] == 11) {
                                     dealerHand[i][2] = 1; // Change Ace from 11 to 1
                                 }
                             }
