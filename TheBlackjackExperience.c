@@ -686,6 +686,7 @@ void clearText(char* player, char Usage){
   if (strcmp("Person", player) == 0){
       x = 610;
       y = 640;
+      f+=2;
   } else if (strcmp("Dealer", player) == 0){
       x = 610;
       f += 2;
@@ -764,7 +765,7 @@ void drawButton(int x, int y, char *text) {
 
 // Function to Create New Deck
 void createDeck(int deck[52][3]) {
-    /* Initialize Arrays of Information */
+    // Initialize Arrays of Information 
     int suits[4] = {0, 1, 2, 3}; // 0: Heart, 1: Diamond, 2: Spade, 3: Club
     int faceValues[13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}; // 2 to Ace
     int cardValues[13] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 0}; // Blackjack values
@@ -783,6 +784,29 @@ void createDeck(int deck[52][3]) {
     // Call Save Deck
     saveDeckToFile("NewDeck.txt", deck);
 }
+/*
+// Rigged Deck Creation
+ void createDeck(int deck[52][3]) {
+    // Initialize Arrays of Information 
+    int suits[4] = {0, 1, 2, 3}; // 0: Heart, 1: Diamond, 2: Spade, 3: Club
+    int faceValues[13] = {14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14}; // 2 to Ace
+    int cardValues[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Blackjack values
+
+    // Create an Index out of For-Loop Scope
+    int index = 0;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 13; j++) {
+            deck[index][0] = suits[i];       // Suit
+            deck[index][1] = faceValues[j]; // Face Value
+            deck[index][2] = cardValues[j]; // Card Value
+            index++;
+        }
+    }
+
+    // Call Save Deck
+    saveDeckToFile("NewDeck.txt", deck);
+}
+*/
 
 void shuffleCards(int deck[52][3]) {
     srand(time(NULL));
@@ -931,6 +955,7 @@ void displayHands(int playerHand[10][3], int playerHandSize, int dealerHand[10][
         if (playerTotal / 10 == 2) {
             valX -= 4;
         }
+
         for (int i = oldPlayerTotal; i <= playerTotal; i++){
             usleep(20000);
             if (i-11 > 0){
@@ -942,10 +967,15 @@ void displayHands(int playerHand[10][3], int playerHandSize, int dealerHand[10][
         }
     } else {
         printf("Total: %d", playerTotal);
-        for (int i = oldPlayerTotal; i <= playerTotal; i++){
-            usleep(20000);
-            drawValue("Person", i, ((1280 / 2) + (1280 / 2)) / 2, 0);
-            usleep(20000);
+        //printf("old: %i; new: %i", oldPlayerTotal, playerTotal);
+        if (oldPlayerTotal > 21){
+            drawValue("Person", playerTotal, ((1280 / 2) + (1280 / 2)) / 2, 0);
+        } else {
+            for (int i = oldPlayerTotal; i <= playerTotal; i++){
+                usleep(20000);
+                drawValue("Person", i, ((1280 / 2) + (1280 / 2)) / 2, 0);
+                usleep(20000);
+            }
         }
     }
 
@@ -967,10 +997,14 @@ void displayHands(int playerHand[10][3], int playerHandSize, int dealerHand[10][
         }
     } else {
         printf("\t\t\t\tTotal: %d", dealerTotal);
-        for (int i = oldDealerTotal; i <= dealerTotal; i++){
-            usleep(20000);
-            drawValue("Dealer", i, ((1280 / 2) + (1280 / 2)) / 2, 0);
-            usleep(20000);
+        if (oldDealerTotal > 21){
+            drawValue("Dealer", dealerTotal, ((1280 / 2) + (1280 / 2)) / 2, 0);
+        } else {
+          for (int i = oldDealerTotal; i <= dealerTotal; i++){
+              usleep(20000);
+              drawValue("Dealer", i, ((1280 / 2) + (1280 / 2)) / 2, 0);
+              usleep(20000);
+          }
         }
     }
 
@@ -1834,7 +1868,7 @@ int main(){
                     while (1) {
                         char c = gfx_wait();
                         if (c == 1) {
-                            printf("%d %d\n", gfx_xpos(), gfx_ypos());
+                            //printf("%d %d\n", gfx_xpos(), gfx_ypos());
                             int xPos = gfx_xpos();
                             int yPos = gfx_ypos();
                             int standButtonX = (screenX / 2) - 110;
@@ -1885,6 +1919,8 @@ int main(){
                                 break;
                             }
                         }
+                        oldPlayerTotal = playerTotal;
+                        oldDealerTotal = dealerTotal;
                         playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                         oldPlayerTotal = playerTotal;
@@ -1917,12 +1953,13 @@ int main(){
                         dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         if (d_hasAceSave && dealerTotal > 21) {
                             for (int i = 0; i < dealerHandSize; i++) {
-                                if (dealerHand[i][1] == 14 && dealerHand[i][1] == 11) {
+                                if (dealerHand[i][1] == 14 && dealerHand[i][2] == 11) {
                                     dealerHand[i][2] = 1; // Change Ace from 11 to 1
                                 }
                             }
+                            dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         }
-                        dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
+                        //dealerTotal = calculateTotalValue(dealerHand, dealerHandSize, false);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                         oldPlayerTotal = playerTotal;
                         oldDealerTotal = dealerTotal;
