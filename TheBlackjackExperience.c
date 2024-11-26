@@ -784,13 +784,14 @@ void createDeck(int deck[52][3]) {
     // Call Save Deck
     saveDeckToFile("NewDeck.txt", deck);
 }
+
 /*
 // Rigged Deck Creation
  void createDeck(int deck[52][3]) {
     // Initialize Arrays of Information 
     int suits[4] = {0, 1, 2, 3}; // 0: Heart, 1: Diamond, 2: Spade, 3: Club
-    int faceValues[13] = {14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14}; // 2 to Ace
-    int cardValues[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Blackjack values
+    int faceValues[13] = {10, 5, 5, 5, 10, 10, 5, 14, 14, 14, 10, 10, 14}; // 2 to Ace
+    int cardValues[13] = {10, 5, 5, 5, 10, 10, 5, 0, 0, 0, 10, 10, 0}; // Blackjack values
 
     // Create an Index out of For-Loop Scope
     int index = 0;
@@ -805,8 +806,8 @@ void createDeck(int deck[52][3]) {
 
     // Call Save Deck
     saveDeckToFile("NewDeck.txt", deck);
-}
-*/
+}*/
+
 
 void shuffleCards(int deck[52][3]) {
     srand(time(NULL));
@@ -1120,7 +1121,7 @@ int createHelpScreen(int x, int y){
     gfx_text("- Aces: Can be worth either 1 point or 11 points.", 315, 340, 1);
 
     gfx_text("Game Setup", 300, 380, 1);
-    gfx_text("1. Starting the Game: Click \"Start Game\" to begin.", 315, 410, 1);
+    gfx_text("1. Starting the Game: Click \"Start\" to begin.", 315, 410, 1);
     gfx_text("2. Dealing: You and the dealer will receive two cards. Both face-up.", 315, 440, 1);
     gfx_text("   Your cards and the dealers' are face-up.", 315, 457, 1);
 
@@ -1919,8 +1920,8 @@ int main(){
                                 break;
                             }
                         }
-                        oldPlayerTotal = playerTotal;
-                        oldDealerTotal = dealerTotal;
+                        //oldPlayerTotal = playerTotal;
+                        //oldDealerTotal = dealerTotal;
                         playerTotal = calculateTotalValue(playerHand, playerHandSize, true);
                         displayHands(playerHand, playerHandSize, dealerHand, dealerHandSize, playerTotal, dealerTotal);
                         oldPlayerTotal = playerTotal;
