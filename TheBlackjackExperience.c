@@ -31,11 +31,8 @@
 #include <math.h>
 #include <unistd.h>
 #include <signal.h>
-
 #include "gfx.h"
-
-// Define Maximum Allowed Cards Graphically
-#define MAX_CARDS 6
+#define MAX_CARDS 24
 
 // Phase 1 Function Definition
 bool hasEnoughCards(int topCardIndex);
@@ -509,7 +506,6 @@ void drawCard(char *player, int card_number, int value, char suit) {
     
     int card_width = 100;
     int card_height = 150;
-
 
     // Draw Card by Parts
     if (card_number >= 0 && card_number < MAX_CARDS) {
@@ -1982,9 +1978,6 @@ int main(){
             gfx_text("YES", (515+40), 480, 2);
             gfx_rectangle(515, 465, 115, 50);
             
-            
-
-
             gfx_text("NO", (575+120), 480, 2);
             gfx_rectangle(515+115+15, 465, 115, 50);
             
