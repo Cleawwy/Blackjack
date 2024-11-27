@@ -1,4 +1,15 @@
 /*
+ *
+ * Group Name       : Blackjack Insight
+ * 1st Member Name  : Mohammad Shebaro
+ * 1st Matric       : 24004149
+ * Semester         : Sep 2024
+ * 
+ * Command to Execute:
+ * gcc blackjack.c gfx.c -o blackjack.o -lX11 -lm
+ * 
+ * --
+ * 
  * Blackjack Game - Created by Mohammad Shebaro - 24004149
  * 
  * Copyright © 2024. All rights reserved.
@@ -7,7 +18,8 @@
  * for educational and personal purposes, provided that this copyright 
  * notice and disclaimer are included in all copies or substantial portions 
  * of the software.
- *
+ * 
+ * --
  */
 
 // Libraries & Headers
@@ -1625,9 +1637,6 @@ int main(){
             int i = 29;
 
             gfx_color(0,0,0);
-            //printf("%i\n", i);
-
-
             radius_x += 5;
             radius_y += 5;
 
@@ -1650,11 +1659,8 @@ int main(){
             radius_x = 500;
             radius_y = 350;
                         
-            // gfx_flush();
-
             // Draw the outer border (brown border area)
             gfx_color(81, 51, 17); // Border color
-
             // Outer ellipse (border)
             radius_x += 2;
             for (int x = center_x - (radius_x + i); x <= center_x + (radius_x + i); x++) {
@@ -1664,7 +1670,6 @@ int main(){
             }
             radius_x -= 2;
             gfx_flush(); // Flush the drawing buffer to update the screen
-
             radius_x += 30;
             radius_y += 30;
             for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
@@ -1680,8 +1685,6 @@ int main(){
                 }
             }
 
-
-
             gfx_flush();
             
             radius_x = 500;
@@ -1689,9 +1692,7 @@ int main(){
 
             // Noisy Drawing for Blackjack Green Fabric Texture
             for (int x = center_x - radius_x; x <= center_x + radius_x; x++) {
-
                 double max_y = radius_y * sqrt(1 - ((x - center_x) * (x - center_x)) / (double)(radius_x * radius_x));
-
                 for (int y = center_y; y <= center_y + (int)max_y; y++) {
 
                     int noise = (rand() % 10) - 5;
@@ -1722,12 +1723,10 @@ int main(){
                     int r = 25 + noise;             // Red component (static)
                     int g = 70 + noise;             // Green component (static, with noise)
                     int b = 25 + noise;             // Blue component (static)
-
                     // Prevent color values from going negative
                     if (r < 0) r = 0;
                     if (g < 0) g = 0;
                     if (b < 0) b = 0;
-
                     // Set the color with slight variation to simulate fabric texture
                     gfx_color(r, g, b);
                     gfx_point(x, y);  // Draw the point
@@ -1741,7 +1740,6 @@ int main(){
             double radius_x_inner = radius_x - border_thickness / 2; 
             double radius_y_inner = radius_y - border_thickness / 2; 
 
-
             for (int i = 0; i <= num_dots_curve; i++) {
                 double t = M_PI * i / num_dots_curve; 
 
@@ -1752,7 +1750,6 @@ int main(){
                 gfx_point(x, y); 
             }
 
-
             int y_start = center_y + radius_y_inner; 
             int y_end = 0; 
             int num_dots_vertical = num_dots_curve / 2; 
@@ -1762,9 +1759,7 @@ int main(){
             int x_left = center_x - radius_x_inner; 
             for (int i = 0; i <= num_dots_vertical; i++) {
                 int y = y_start - i * vertical_spacing; 
-
                 if (y < y_end) break; 
-
                 gfx_point(x_left, y-350); 
             }
 
@@ -1772,13 +1767,9 @@ int main(){
             int x_right = center_x + radius_x_inner; 
             for (int i = 0; i <= num_dots_vertical; i++) {
                 int y = y_start - i * vertical_spacing; 
-
                 if (y < y_end) break; 
-
                 gfx_point(x_right, y-350); 
             }
-
-
 
             gfx_flush();
 
