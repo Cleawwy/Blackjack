@@ -2,11 +2,11 @@
  *
  * 
  * Command to Execute:
- * gcc blackjack.c gfx.c -o blackjack.o -lX11 -lm
+ * (NECESSARY) gcc blackjack.c gfx.c -o blackjack.o -lX11 -lm
  * 
  * --
  * 
- * Blackjack Game - Created by Meraki
+ * A Blackjack Game - Created by Meraki
  * 
  * Copyright © 2024. All rights reserved.
  *
