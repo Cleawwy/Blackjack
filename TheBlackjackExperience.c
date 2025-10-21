@@ -1,16 +1,12 @@
 /*
  *
- * Group Name       : Blackjack Insight
- * 1st Member Name  : Mohammad Shebaro
- * 1st Matric       : 24004149
- * Semester         : Sep 2024
  * 
  * Command to Execute:
- * gcc blackjack.c gfx.c -o blackjack.o -lX11 -lm
+ * (NECESSARY) gcc blackjack.c gfx.c -o blackjack.o -lX11 -lm
  * 
  * --
  * 
- * Blackjack Game - Created by Mohammad Shebaro - 24004149
+ * A Blackjack Game - Created by Meraki
  * 
  * Copyright © 2024. All rights reserved.
  *
